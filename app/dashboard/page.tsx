@@ -2,17 +2,16 @@
 
 import React, { useState } from 'react';
 
-// Item individual do inventário
 interface ItemInventario {
   item: string;
   quantidade: number;
-  categoria?: string;
 }
 
-// Estrutura detalhada do serviço
 interface ServicoAgendado {
   id: string;
   hora: string;
+  data: string; // Ex: '26 Ago' ou número do dia
+  diaNumero: number;
   titulo: string;
   cliente: string;
   telefone: string;
@@ -24,583 +23,462 @@ interface ServicoAgendado {
   faturado: boolean;
   volume: string;
   inventario: ItemInventario[];
-  notas?: string;
   corBorda: string;
 }
 
-interface DiaAgenda {
-  diaSemana: string;
-  data: string;
+interface DiaMes {
+  diaNumero: number;
+  nomeDia: string;
   hoje?: boolean;
   servicos: ServicoAgendado[];
 }
 
-const EMPRESAS_MOCK = [
-  {
-    id: 'nortecargo',
-    nome: 'NorteCargo (Mudanças & Transportes)',
-    agenda: [
-      {
-        diaSemana: 'Seg',
-        data: '24 Ago',
-        servicos: [
-          {
-            id: 's1',
-            hora: '09:00',
-            titulo: 'Mudança T2 Completa',
-            cliente: 'João Silva',
-            telefone: '912 345 678',
-            email: 'joao.silva@email.com',
-            localOrigem: 'Rua de Santa Catarina, nº 450, 3º Dto, Porto',
-            localDestino: 'Av. da República, nº 1200, 5º Esq, Vila Nova de Gaia',
-            valor: 350,
-            estadoPagamento: 'Sinal Pago',
-            faturado: true,
-            volume: '18 m³',
-            inventario: [
-              { item: 'Sofá Chaiselongue 3 Lugares', quantidade: 1, categoria: 'Sala' },
-              { item: 'Móvel de TV + Televisão 55"', quantidade: 1, categoria: 'Sala' },
-              { item: 'Mesa de Jantar + 6 Cadeiras', quantidade: 1, categoria: 'Sala' },
-              { item: 'Cama Casal + Colchão King Size', quantidade: 1, categoria: 'Quarto Principal' },
-              { item: 'Roupeiro 3 Portas (Para Desmontar)', quantidade: 1, categoria: 'Quarto Principal' },
-              { item: 'Frigorífico Americano', quantidade: 1, categoria: 'Cozinha' },
-              { item: 'Máquina de Lavar Roupa', quantidade: 1, categoria: 'Cozinha' },
-              { item: 'Caixas de Cartão (Livros e Roupa)', quantidade: 25, categoria: 'Diversos' },
-            ],
-            notas: 'Prédio de origem sem elevador (3º andar). Necessário cuidado extra com a televisão e espelho de grandes dimensões.',
-            corBorda: '#38bdf8',
-          },
-        ],
-      },
-      {
-        diaSemana: 'Ter',
-        data: '25 Ago',
-        hoje: true,
-        servicos: [
-          {
-            id: 's2',
-            hora: '10:30',
-            titulo: 'Transporte de Carga Empresarial',
-            cliente: 'LogiTech Lda (Resp: Carlos)',
-            telefone: '934 567 890',
-            email: 'logistica@logitech.pt',
-            localOrigem: 'Zona Industrial da Maia, Setor 4, Armazém 12',
-            localDestino: 'Centro Logístico de Matosinhos, Cais 3',
-            valor: 200,
-            estadoPagamento: 'Pago',
-            faturado: true,
-            volume: '8 m³',
-            inventario: [
-              { item: 'Palete com Servidores / TI', quantidade: 2, categoria: 'Equipamento' },
-              { item: 'Caixas com Monitores', quantidade: 10, categoria: 'Material' },
-              { item: 'Cadeiras de Escritório Ergonómicas', quantidade: 6, categoria: 'Mobiliário' },
-            ],
-            notas: 'Carga paletizada com filme extensível. Apresentar guia de transporte no cais de receção.',
-            corBorda: '#4ade80',
-          },
-          {
-            id: 's3',
-            hora: '14:30',
-            titulo: 'Avaliação & Orçamento no Local',
-            cliente: 'Maria Santos',
-            telefone: '961 112 233',
-            email: 'maria.santos@gmail.com',
-            localOrigem: 'Rua Formosa, nº 88, Porto',
-            localDestino: 'A definir no local',
-            valor: 0,
-            estadoPagamento: 'Pendente',
-            faturado: false,
-            volume: 'A medir',
-            inventario: [
-              { item: 'Visita técnica para medição de móveis antigos', quantidade: 1, categoria: 'Serviço' },
-            ],
-            notas: 'Verificar se o sofá de 3 lugares passa nas escadas do prédio ou se precisará de elevador exterior.',
-            corBorda: '#facc15',
-          },
-        ],
-      },
-      { diaSemana: 'Qua', data: '26 Ago', servicos: [] },
-      {
-        diaSemana: 'Qui',
-        data: '27 Ago',
-        servicos: [
-          {
-            id: 's4',
-            hora: '08:00',
-            titulo: 'Mudança de Escritório Regional',
-            cliente: 'Consultoria Alfa S.A.',
-            telefone: '925 998 877',
-            email: 'geral@consultoriaalfa.pt',
-            localOrigem: 'Av. dos Aliados, nº 210, 2º Andar, Porto',
-            localDestino: 'Centro Empresarial de Braga, Bloco B',
-            valor: 850,
-            estadoPagamento: 'Sinal Pago',
-            faturado: false,
-            volume: '35 m³',
-            inventario: [
-              { item: 'Secretárias Individuais', quantidade: 8, categoria: 'Escritório' },
-              { item: 'Cadeiras Giratórias', quantidade: 12, categoria: 'Escritório' },
-              { item: 'Blocos de Gavetas', quantidade: 8, categoria: 'Escritório' },
-              { item: 'Armários Arquivadores de Aço', quantidade: 4, categoria: 'Arquivo' },
-              { item: 'Caixas com Documentação', quantidade: 40, categoria: 'Arquivo' },
-            ],
-            notas: 'Necessários 3 ajudantes + 2 carrinhas de caixa aberta. Autorização de estacionamento na Av. dos Aliados já tratada.',
-            corBorda: '#38bdf8',
-          },
-        ],
-      },
-      { diaSemana: 'Sex', data: '28 Ago', servicos: [] },
-      {
-        diaSemana: 'Sáb',
-        data: '29 Ago',
-        servicos: [
-          {
-            id: 's5',
-            hora: '09:30',
-            titulo: 'Mudança T3 Familiar',
-            cliente: 'Carlos Rocha',
-            telefone: '918 887 766',
-            email: 'carlos.rocha@sapo.pt',
-            localOrigem: 'Rua do Amial, Gondomar',
-            localDestino: 'Rua Senhora da Luz, Foz do Douro, Porto',
-            valor: 480,
-            estadoPagamento: 'Pendente',
-            faturado: false,
-            volume: '24 m³',
-            inventario: [
-              { item: 'Cama Casal com Arrumação', quantidade: 1, categoria: 'Quarto' },
-              { item: 'Camas Solteiro', quantidade: 2, categoria: 'Quarto' },
-              { item: 'Móvel de Sala + Louceiro', quantidade: 1, categoria: 'Sala' },
-              { item: 'Caixas de Louça Delicada / Cristais', quantidade: 15, categoria: 'Cozinha' },
-            ],
-            notas: 'Embalamento de louças delicadas e cristais incluído no preço final.',
-            corBorda: '#38bdf8',
-          },
-        ],
-      },
-      { diaSemana: 'Dom', data: '30 Ago', servicos: [] },
-    ] as DiaAgenda[],
-    financas: {
-      entrou: 14500,
-      saiu: 6200,
-      faturado: 11200,
-      naoFaturado: 3300,
-      despesasFixas: 3500,
-      despesasVariaveis: 2700,
-    },
-  },
-  {
-    id: 'empresa_2',
-    nome: 'Empresa 2 (Futuro Negócio)',
-    agenda: [
-      { diaSemana: 'Seg', data: '24 Ago', servicos: [] },
-      { diaSemana: 'Ter', data: '25 Ago', hoje: true, servicos: [] },
-      { diaSemana: 'Qua', data: '26 Ago', servicos: [] },
-      { diaSemana: 'Qui', data: '27 Ago', servicos: [] },
-      { diaSemana: 'Sex', data: '28 Ago', servicos: [] },
-      { diaSemana: 'Sáb', data: '29 Ago', servicos: [] },
-      { diaSemana: 'Dom', data: '30 Ago', servicos: [] },
-    ],
-    financas: {
-      entrou: 0,
-      saiu: 0,
-      faturado: 0,
-      naoFaturado: 0,
-      despesasFixas: 0,
-      despesasVariaveis: 0,
-    },
-  },
-];
-
-export default function DashboardCentralPage() {
+export default function DashboardPage() {
   const [empresaSelecionadaId, setEmpresaSelecionadaId] = useState<string>('nortecargo');
+  const [abaAtiva, setAbaAtiva] = useState<'inicio' | 'servicos'>('inicio');
   const [servicoSelecionado, setServicoSelecionado] = useState<ServicoAgendado | null>(null);
 
-  const empresaAtiva =
-    EMPRESAS_MOCK.find((e) => e.id === empresaSelecionadaId) || EMPRESAS_MOCK[0];
-  const { financas, agenda } = empresaAtiva;
+  // Estados dos modais
+  const [modalClienteAberto, setModalClienteAberto] = useState(false);
+  const [modalServicoAberto, setModalServicoAberto] = useState(false);
 
+  // Campos do formulário
+  const [nomeCliente, setNomeCliente] = useState('');
+  const [telefoneCliente, setTelefoneCliente] = useState('');
+  const [emailCliente, setEmailCliente] = useState('');
+
+  const [tituloServico, setTituloServico] = useState('');
+  const [diaServico, setDiaServico] = useState('26');
+  const [horaServico, setHoraServico] = useState('10:00');
+  const [origemServico, setOrigemServico] = useState('');
+  const [destinoServico, setDestinoServico] = useState('');
+  const [valorServico, setValorServico] = useState('');
+  const [volumeServico, setVolumeServico] = useState('Médio');
+
+  // Gerar os dias do mês de Agosto (31 dias) por defeito
+  const gerarDiasDoMes = (): DiaMes[] => {
+    const diasArray: DiaMes[] = [];
+    const nomesSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    
+    for (let i = 1; i <= 31; i++) {
+      // 1 de Agosto de 2026 começa a um Sábado (índice 6) por exemplo, ou simulamos a sequência
+      const indiceSemana = (i + 5) % 7;
+      diasArray.push({
+        diaNumero: i,
+        nomeDia: nomesSemana[indiceSemana],
+        hoje: i === 26, // 26 de Agosto como dia atual
+        servicos: []
+      });
+    }
+    return diasArray;
+  };
+
+  const [diasMes, setDiasMes] = useState<DiaMes[]>(gerarDiasDoMes());
+
+  const [financas, setFinancas] = useState({
+    entrou: 0,
+    saiu: 0,
+    faturado: 0,
+    naoFaturado: 0,
+  });
+
+  const todosOsServicos: ServicoAgendado[] = diasMes.flatMap((d) => d.servicos);
   const saldoLiquidoFaturado = financas.faturado - financas.saiu;
   const saldoTotalEstimado = financas.entrou - financas.saiu;
-  const totalServicosSemana = agenda.reduce((acc, dia) => acc + dia.servicos.length, 0);
+  const totalServicosMes = todosOsServicos.length;
+
+  // Guardar novo serviço / cliente
+  const guardarServico = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nomeCliente || !tituloServico) {
+      alert('Por favor, preenche pelo menos o nome do cliente e o título do serviço.');
+      return;
+    }
+
+    const diaNum = Number(diaServico) || 26;
+
+    const novoServico: ServicoAgendado = {
+      id: Date.now().toString(),
+      hora: horaServico,
+      data: `${diaNum} Ago`,
+      diaNumero: diaNum,
+      titulo: tituloServico,
+      cliente: nomeCliente,
+      telefone: telefoneCliente || 'Não especificado',
+      email: emailCliente || 'Não especificado',
+      localOrigem: origemServico || 'Porto',
+      localDestino: destinoServico || 'Lisboa',
+      valor: Number(valorServico) || 0,
+      estadoPagamento: 'Pendente',
+      faturado: false,
+      volume: volumeServico,
+      inventario: [
+        { item: 'Caixas de papelão', quantidade: 10 },
+        { item: 'Móvel / Diversos', quantidade: 2 },
+      ],
+      corBorda: '#38bdf8',
+    };
+
+    // Adicionar ao dia correspondente no mês
+    setDiasMes(prev => prev.map(dia => {
+      if (dia.diaNumero === diaNum) {
+        return { ...dia, servicos: [...dia.servicos, novoServico] };
+      }
+      return dia;
+    }));
+
+    // Atualizar finanças
+    const valNum = Number(valorServico) || 0;
+    if (valNum > 0) {
+      setFinancas(f => ({
+        ...f,
+        naoFaturado: f.naoFaturado + valNum,
+        entrou: f.entrou + valNum
+      }));
+    }
+
+    // Fechar modais e limpar
+    setModalServicoAberto(false);
+    setModalClienteAberto(false);
+    setNomeCliente('');
+    setTelefoneCliente('');
+    setEmailCliente('');
+    setTituloServico('');
+    setValorServico('');
+  };
 
   return (
-    <div style={{ backgroundColor: '#0f172a', minHeight: '100vh', color: '#f8fafc', padding: '30px 20px', fontFamily: 'sans-serif' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', color: '#f8fafc', fontFamily: 'sans-serif', display: 'flex', flexDirection: 'column' }}>
       
-      {/* CABEÇALHO */}
-      <header style={{ maxWidth: '1200px', margin: '0 auto 24px auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-        <div>
-          <h1 style={{ fontSize: '32px', fontWeight: 800, margin: 0, color: '#ffffff' }}>Painel de Saúde Empresarial</h1>
-          <p style={{ margin: '6px 0 0 0', color: '#94a3b8', fontSize: '16px' }}>Gestão central e controlo financeiro interno</p>
-        </div>
+      {/* BARRA SUPERIOR */}
+      <nav style={{ backgroundColor: '#1e293b', borderBottom: '1px solid #334155', padding: '14px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontSize: '20px', fontWeight: 900, color: '#38bdf8' }}>
+          NORTE<span style={{ color: '#4ade80' }}>CARGO</span> 
+          <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 'normal', marginLeft: '10px' }}>| Sistema de Gestão Interna</span>
+        </span>
+        <select
+          value={empresaSelecionadaId}
+          onChange={(e) => setEmpresaSelecionadaId(e.target.value)}
+          style={{ backgroundColor: '#0f172a', color: '#fff', border: '1px solid #334155', padding: '6px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: 700 }}
+        >
+          <option value="nortecargo">NorteCargo (Mudanças & Transportes)</option>
+        </select>
+      </nav>
 
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <label style={{ fontSize: '15px', color: '#cbd5e1', fontWeight: 600 }}>Negócio Ativo:</label>
-          <select
-            value={empresaSelecionadaId}
-            onChange={(e) => setEmpresaSelecionadaId(e.target.value)}
-            style={{ backgroundColor: '#1e293b', color: '#fff', border: '1px solid #334155', padding: '12px 18px', borderRadius: '8px', fontSize: '15px', fontWeight: 700, cursor: 'pointer' }}
+      {/* CORPO PRINCIPAL */}
+      <div style={{ display: 'flex', flex: 1 }}>
+        
+        {/* SIDEBAR */}
+        <aside style={{ width: '260px', backgroundColor: '#1e293b', borderRight: '1px solid #334155', display: 'flex', flexDirection: 'column', padding: '20px', gap: '12px' }}>
+          
+          <button
+            onClick={() => setAbaAtiva('inicio')}
+            style={{
+              backgroundColor: abaAtiva === 'inicio' ? '#0284c7' : 'transparent',
+              color: '#fff', border: 'none', borderRadius: '8px', padding: '12px 14px', textAlign: 'left', fontWeight: 800, cursor: 'pointer', fontSize: '14px'
+            }}
           >
-            {EMPRESAS_MOCK.map((emp) => (
-              <option key={emp.id} value={emp.id}>
-                {emp.nome}
-              </option>
-            ))}
-          </select>
-        </div>
-      </header>
+            📊 Painel Geral
+          </button>
 
-      {/* QUADRO AMPLIADO DE SERVIÇOS */}
-      <section style={{ maxWidth: '1200px', margin: '0 auto 28px auto' }}>
-        <div style={{ ...cardStyle, padding: '28px' }}>
-          <div style={{ ...cardHeaderStyle, marginBottom: '22px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <span style={{ fontSize: '22px', fontWeight: 800, color: '#ffffff' }}>Agenda Semanal de Serviços</span>
-              <span style={{ fontSize: '14px', backgroundColor: '#0284c7', color: '#ffffff', padding: '4px 12px', borderRadius: '6px', fontWeight: 700 }}>
-                {totalServicosSemana} Agendamentos
-              </span>
+          <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', paddingLeft: '4px' }}>
+              👥 Gestão de Clientes
             </div>
-            <span style={{ fontSize: '14px', color: '#38bdf8', fontWeight: 700 }}>Clica num serviço para abrir detalhes + inventário</span>
+            
+            <button
+              onClick={() => setAbaAtiva('servicos')}
+              style={{
+                backgroundColor: abaAtiva === 'servicos' ? '#14532d' : 'transparent',
+                color: abaAtiva === 'servicos' ? '#4ade80' : '#cbd5e1',
+                border: 'none', borderRadius: '8px', padding: '10px 14px 10px 20px', textAlign: 'left', fontWeight: 700, cursor: 'pointer', fontSize: '14px'
+              }}
+            >
+              🛠️ Serviços
+            </button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(155px, 1fr))', gap: '14px' }}>
-            {agenda.map((dia) => (
-              <div
-                key={dia.diaSemana}
-                style={{
-                  backgroundColor: dia.hoje ? '#0f172a' : '#111827',
-                  border: dia.hoje ? '2px solid #38bdf8' : '1px solid #334155',
-                  borderRadius: '10px',
-                  padding: '14px',
-                  minHeight: '220px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b', paddingBottom: '6px' }}>
-                  <span style={{ fontSize: '14px', fontWeight: 800, color: dia.hoje ? '#38bdf8' : '#cbd5e1' }}>
-                    {dia.diaSemana} {dia.hoje && '(Hoje)'}
+          <div style={{ marginTop: '20px', borderTop: '1px solid #334155', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', paddingLeft: '4px' }}>
+              Ações Rápidas
+            </div>
+
+            <button
+              onClick={() => setModalClienteAberto(true)}
+              style={{ backgroundColor: '#0369a1', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 14px', textAlign: 'left', fontWeight: 700, cursor: 'pointer', fontSize: '13px' }}
+            >
+              👤 Adicionar Cliente
+            </button>
+
+            <button
+              onClick={() => setModalServicoAberto(true)}
+              style={{ backgroundColor: '#15803d', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 14px', textAlign: 'left', fontWeight: 700, cursor: 'pointer', fontSize: '13px' }}
+            >
+              ➕ Adicionar Serviço
+            </button>
+          </div>
+        </aside>
+
+        {/* CONTEÚDO */}
+        <main style={{ flex: 1, padding: '30px', overflowY: 'auto' }}>
+          {abaAtiva === 'inicio' && (
+            <div>
+              <header style={{ marginBottom: '24px' }}>
+                <h1 style={{ fontSize: '28px', fontWeight: 800, margin: 0 }}>Painel de Saúde Empresarial</h1>
+                <p style={{ margin: '4px 0 0 0', color: '#94a3b8', fontSize: '15px' }}>Controlo financeiro e agenda mensal completa</p>
+              </header>
+
+              {/* AGENDA MENSAL COMPLETA */}
+              <section style={{ ...cardStyle, marginBottom: '24px' }}>
+                <div style={{ ...cardHeaderStyle, marginBottom: '16px' }}>
+                  <span style={{ fontSize: '18px', fontWeight: 800 }}>📅 Agenda Completa de Agosto de 2026</span>
+                  <span style={{ fontSize: '13px', backgroundColor: '#0284c7', color: '#fff', padding: '3px 10px', borderRadius: '6px', fontWeight: 700 }}>
+                    {totalServicosMes} Agendamentos este mês
                   </span>
-                  <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 600 }}>{dia.data}</span>
                 </div>
 
-                {dia.servicos.length === 0 ? (
-                  <span style={{ fontSize: '13px', color: '#475569', fontStyle: 'italic', marginTop: '8px' }}>Sem serviços</span>
-                ) : (
-                  dia.servicos.map((s) => (
+                {/* GRELHA DO MÊS (7 colunas para os dias da semana) */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px' }}>
+                  {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(d => (
+                    <div key={d} style={{ textAlign: 'center', fontSize: '12px', fontWeight: 800, color: '#94a3b8', paddingBottom: '6px' }}>
+                      {d}
+                    </div>
+                  ))}
+
+                  {diasMes.map((dia) => (
                     <div
-                      key={s.id}
-                      onClick={() => setServicoSelecionado(s)}
+                      key={dia.diaNumero}
                       style={{
-                        backgroundColor: '#1e293b',
-                        borderLeft: `5px solid ${s.corBorda}`,
-                        padding: '10px 12px',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        transition: 'transform 0.15s ease, backgroundColor 0.15s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.backgroundColor = '#334155';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.backgroundColor = '#1e293b';
+                        backgroundColor: dia.hoje ? '#0f172a' : '#111827',
+                        border: dia.hoje ? '2px solid #38bdf8' : '1px solid #334155',
+                        borderRadius: '8px',
+                        padding: '8px',
+                        minHeight: '100px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '6px',
                       }}
                     >
-                      <div style={{ fontWeight: 800, fontSize: '13px', color: '#f8fafc' }}>
-                        {s.hora} - {s.titulo}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: 800, borderBottom: '1px solid #1e293b', paddingBottom: '3px', color: dia.hoje ? '#38bdf8' : '#cbd5e1' }}>
+                        <span>{dia.diaNumero}</span>
+                        <span style={{ fontSize: '10px', color: '#64748b' }}>{dia.nomeDia}</span>
                       </div>
-                      <div style={{ color: '#cbd5e1', fontSize: '12px', marginTop: '4px', fontWeight: 600 }}>
-                        👤 {s.cliente}
-                      </div>
-                      <div style={{ color: '#4ade80', fontSize: '13px', marginTop: '3px', fontWeight: 800 }}>
-                        {s.valor > 0 ? `${s.valor} €` : 'A Avaliar'}
-                      </div>
+
+                      {dia.servicos.length === 0 ? (
+                        <span style={{ fontSize: '10px', color: '#334155', fontStyle: 'italic' }}>-</span>
+                      ) : (
+                        dia.servicos.map((s) => (
+                          <div
+                            key={s.id}
+                            onClick={() => setServicoSelecionado(s)}
+                            style={{ backgroundColor: '#1e293b', borderLeft: `3px solid ${s.corBorda}`, padding: '4px 6px', borderRadius: '4px', cursor: 'pointer' }}
+                          >
+                            <div style={{ fontWeight: 800, fontSize: '11px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.hora} {s.titulo}</div>
+                            <div style={{ color: '#4ade80', fontSize: '10px', fontWeight: 800 }}>{s.valor > 0 ? `${s.valor} €` : 'Avaliar'}</div>
+                          </div>
+                        ))
+                      )}
                     </div>
-                  ))
-                )}
+                  ))}
+                </div>
+              </section>
+
+              {/* FINANCEIRO */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+                <div style={cardStyle}>
+                  <span style={{ fontSize: '14px', color: '#94a3b8', fontWeight: 700 }}>FLUXO DE CAIXA</span>
+                  <div style={{ fontSize: '24px', fontWeight: 800, color: '#4ade80', marginTop: '8px' }}>+ {financas.entrou.toLocaleString('pt-PT')} €</div>
+                  <div style={{ fontSize: '20px', fontWeight: 700, color: '#f87171', marginTop: '4px' }}>- {financas.saiu.toLocaleString('pt-PT')} €</div>
+                </div>
+
+                <div style={cardStyle}>
+                  <span style={{ fontSize: '14px', color: '#94a3b8', fontWeight: 700 }}>FATURAÇÃO</span>
+                  <div style={{ fontSize: '24px', fontWeight: 800, color: '#38bdf8', marginTop: '8px' }}>{financas.faturado.toLocaleString('pt-PT')} €</div>
+                  <div style={{ fontSize: '14px', color: '#facc15', marginTop: '8px' }}>Pendente: {financas.naoFaturado.toLocaleString('pt-PT')} €</div>
+                </div>
+
+                <div style={{ ...cardStyle, borderLeft: '4px solid #16a34a' }}>
+                  <span style={{ fontSize: '14px', color: '#94a3b8', fontWeight: 700 }}>LUCRO LÍQUIDO REAL</span>
+                  <div style={{ fontSize: '26px', fontWeight: 800, color: '#4ade80', marginTop: '8px' }}>{saldoLiquidoFaturado.toLocaleString('pt-PT')} €</div>
+                  <div style={{ fontSize: '13px', color: '#cbd5e1', marginTop: '6px' }}>Potencial: {saldoTotalEstimado.toLocaleString('pt-PT')} €</div>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
+          )}
 
-      {/* GRELHA DOS 4 PAINÉIS FINANCEIROS */}
-      <main style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-        
-        {/* PAINEL 1 */}
-        <div style={cardStyle}>
-          <div style={cardHeaderStyle}>
-            <span style={{ fontSize: '15px', fontWeight: 700, color: '#94a3b8' }}>1. FLUXO DE CAIXA</span>
-            <span style={{ fontSize: '12px', backgroundColor: '#334155', color: '#38bdf8', padding: '2px 8px', borderRadius: '4px' }}>Entrou / Saiu</span>
-          </div>
-
-          <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {abaAtiva === 'servicos' && (
             <div>
-              <span style={{ fontSize: '14px', color: '#cbd5e1' }}>Total Receitas</span>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: '#4ade80', marginTop: '2px' }}>
-                + {financas.entrou.toLocaleString('pt-PT')} €
-              </div>
-            </div>
+              <header style={{ marginBottom: '24px' }}>
+                <h1 style={{ fontSize: '28px', fontWeight: 800, margin: 0 }}>Listagem de Serviços Realizados</h1>
+                <p style={{ margin: '4px 0 0 0', color: '#94a3b8', fontSize: '15px' }}>Clica num serviço para ver o cliente associado e detalhes</p>
+              </header>
 
-            <div style={{ borderTop: '1px solid #334155', paddingTop: '12px' }}>
-              <span style={{ fontSize: '14px', color: '#cbd5e1' }}>Total Despesas</span>
-              <div style={{ fontSize: '26px', fontWeight: 700, color: '#f87171', marginTop: '2px' }}>
-                - {financas.saiu.toLocaleString('pt-PT')} €
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* PAINEL 2 */}
-        <div style={cardStyle}>
-          <div style={cardHeaderStyle}>
-            <span style={{ fontSize: '15px', fontWeight: 700, color: '#94a3b8' }}>2. FATURAÇÃO</span>
-            <span style={{ fontSize: '12px', backgroundColor: '#334155', color: '#facc15', padding: '2px 8px', borderRadius: '4px' }}>Estado</span>
-          </div>
-
-          <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div>
-              <span style={{ fontSize: '14px', color: '#cbd5e1' }}>Saldo Faturado</span>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: '#38bdf8', marginTop: '2px' }}>
-                {financas.faturado.toLocaleString('pt-PT')} €
-              </div>
-            </div>
-
-            <div style={{ borderTop: '1px solid #334155', paddingTop: '12px' }}>
-              <span style={{ fontSize: '14px', color: '#cbd5e1' }}>Pendente Faturação</span>
-              <div style={{ fontSize: '26px', fontWeight: 700, color: '#facc15', marginTop: '2px' }}>
-                {financas.naoFaturado.toLocaleString('pt-PT')} €
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* PAINEL 3 */}
-        <div style={{ ...cardStyle, borderLeft: '4px solid #16a34a' }}>
-          <div style={cardHeaderStyle}>
-            <span style={{ fontSize: '15px', fontWeight: 700, color: '#94a3b8' }}>3. BALANÇO INTERNO</span>
-            <span style={{ fontSize: '12px', backgroundColor: '#14532d', color: '#4ade80', padding: '2px 8px', borderRadius: '4px' }}>Lucro Real</span>
-          </div>
-
-          <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div>
-              <span style={{ fontSize: '14px', color: '#cbd5e1' }}>Lucro Líquido Real</span>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: saldoLiquidoFaturado >= 0 ? '#4ade80' : '#f87171', marginTop: '2px' }}>
-                {saldoLiquidoFaturado.toLocaleString('pt-PT')} €
-              </div>
-            </div>
-
-            <div style={{ borderTop: '1px solid #334155', paddingTop: '12px' }}>
-              <span style={{ fontSize: '14px', color: '#cbd5e1' }}>Balanço Potencial</span>
-              <div style={{ fontSize: '22px', fontWeight: 700, color: '#f8fafc', marginTop: '2px' }}>
-                {saldoTotalEstimado.toLocaleString('pt-PT')} €
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* PAINEL 4 */}
-        <div style={cardStyle}>
-          <div style={cardHeaderStyle}>
-            <span style={{ fontSize: '15px', fontWeight: 700, color: '#94a3b8' }}>4. CUSTOS E MARGEM</span>
-            <span style={{ fontSize: '12px', backgroundColor: '#334155', color: '#cbd5e1', padding: '2px 8px', borderRadius: '4px' }}>Métricas</span>
-          </div>
-
-          <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '15px' }}>
-              <span style={{ color: '#94a3b8' }}>Despesas Fixas:</span>
-              <span style={{ fontWeight: 700, color: '#f8fafc' }}>{financas.despesasFixas.toLocaleString('pt-PT')} €</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '15px' }}>
-              <span style={{ color: '#94a3b8' }}>Despesas Variáveis:</span>
-              <span style={{ fontWeight: 700, color: '#f8fafc' }}>{financas.despesasVariaveis.toLocaleString('pt-PT')} €</span>
-            </div>
-            <div style={{ borderTop: '1px solid #334155', paddingTop: '12px', marginTop: '4px', display: 'flex', justifyContent: 'space-between', fontSize: '15px' }}>
-              <span style={{ color: '#cbd5e1', fontWeight: 700 }}>Margem Operacional:</span>
-              <span style={{ fontWeight: 800, color: '#4ade80' }}>
-                {financas.entrou > 0 ? ((saldoTotalEstimado / financas.entrou) * 100).toFixed(1) : 0}%
-              </span>
-            </div>
-          </div>
-        </div>
-
-      </main>
-
-      {/* POP-UP / MODAL AMPLIADO DE DETALHES + INVENTÁRIO */}
-      {servicoSelecionado && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.85)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            justify: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
-            padding: '20px',
-          }}
-          onClick={() => setServicoSelecionado(null)}
-        >
-          <div
-            style={{
-              backgroundColor: '#1e293b',
-              border: '2px solid #334155',
-              borderRadius: '16px',
-              padding: '32px',
-              maxWidth: '750px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
-              color: '#f8fafc',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* CABEÇALHO DO MODAL */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #334155', paddingBottom: '16px' }}>
-              <div>
-                <span style={{ fontSize: '15px', color: servicoSelecionado.corBorda, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  {servicoSelecionado.hora} • {servicoSelecionado.titulo}
-                </span>
-                <h2 style={{ margin: '6px 0 0 0', fontSize: '28px', fontWeight: 800 }}>
-                  {servicoSelecionado.cliente}
-                </h2>
-              </div>
-              <button
-                onClick={() => setServicoSelecionado(null)}
-                style={{ backgroundColor: '#334155', color: '#fff', border: 'none', borderRadius: '8px', padding: '8px 16px', cursor: 'pointer', fontWeight: 800, fontSize: '18px' }}
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* CONTEÚDO PRINCIPAL DO POP-UP */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '22px', marginTop: '20px' }}>
-              
-              {/* 1. SEÇÃO DE CONTACTO E ESTADO FINANCEIRO */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', backgroundColor: '#0f172a', padding: '18px', borderRadius: '12px', border: '1px solid #334155' }}>
-                <div>
-                  <span style={modalLabelStyle}>Contacto Telefónico</span>
-                  <div style={modalValueStyle}>📞 {servicoSelecionado.telefone}</div>
-                </div>
-
-                <div>
-                  <span style={modalLabelStyle}>E-mail</span>
-                  <div style={modalValueStyle}>✉️ {servicoSelecionado.email}</div>
-                </div>
-
-                <div>
-                  <span style={modalLabelStyle}>Valor Acordado</span>
-                  <div style={{ ...modalValueStyle, color: '#4ade80', fontSize: '22px', fontWeight: 800 }}>
-                    {servicoSelecionado.valor > 0 ? `${servicoSelecionado.valor} €` : 'A Avaliar'}
+              <div style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '12px', overflow: 'hidden' }}>
+                {todosOsServicos.length === 0 ? (
+                  <div style={{ padding: '40px', textAlign: 'center', color: '#94a3b8', fontStyle: 'italic' }}>
+                    Ainda não existem serviços registados. Usa o botão verde "Adicionar Serviço" na barra lateral.
                   </div>
-                </div>
-
-                <div>
-                  <span style={modalLabelStyle}>Estado do Pagamento</span>
-                  <div style={{ ...modalValueStyle, color: servicoSelecionado.estadoPagamento === 'Pago' ? '#4ade80' : '#facc15' }}>
-                    💳 {servicoSelecionado.estadoPagamento}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={modalLabelStyle}>Faturação</span>
-                  <div style={{ ...modalValueStyle, color: servicoSelecionado.faturado ? '#38bdf8' : '#f87171' }}>
-                    📄 {servicoSelecionado.faturado ? 'Faturado (Emitido)' : 'Pendente de Fatura'}
-                  </div>
-                </div>
-
-                <div>
-                  <span style={modalLabelStyle}>Volume Estimado</span>
-                  <div style={modalValueStyle}>📦 {servicoSelecionado.volume}</div>
-                </div>
-              </div>
-
-              {/* 2. TRAJETO (ORIGEM E DESTINO) */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div>
-                  <span style={modalLabelStyle}>📍 Local de Origem</span>
-                  <div style={modalAddressStyle}>{servicoSelecionado.localOrigem}</div>
-                </div>
-
-                <div>
-                  <span style={modalLabelStyle}>🏁 Local de Destino</span>
-                  <div style={modalAddressStyle}>{servicoSelecionado.localDestino}</div>
-                </div>
-              </div>
-
-              {/* 3. INVENTÁRIO COMPLETO DE CARGA */}
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                  <span style={{ fontSize: '18px', fontWeight: 800, color: '#38bdf8' }}>📦 Inventário de Carga</span>
-                  <span style={{ fontSize: '14px', backgroundColor: '#0284c7', color: '#fff', padding: '3px 10px', borderRadius: '6px', fontWeight: 700 }}>
-                    Total: {servicoSelecionado.inventario.reduce((acc, item) => acc + item.quantidade, 0)} itens
-                  </span>
-                </div>
-
-                <div style={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '10px', overflow: 'hidden' }}>
+                ) : (
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                     <thead>
-                      <tr style={{ backgroundColor: '#1e293b', borderBottom: '1px solid #334155' }}>
-                        <th style={tableHeaderStyle}>Item / Descrição</th>
-                        <th style={{ ...tableHeaderStyle, width: '120px', textAlign: 'center' }}>Qtd</th>
-                        <th style={tableHeaderStyle}>Categoria</th>
+                      <tr style={{ backgroundColor: '#0f172a', borderBottom: '1px solid #334155' }}>
+                        <th style={tableHeaderStyle}>Data / Hora</th>
+                        <th style={tableHeaderStyle}>Serviço</th>
+                        <th style={tableHeaderStyle}>Cliente Associado</th>
+                        <th style={tableHeaderStyle}>Valor</th>
+                        <th style={tableHeaderStyle}>Estado</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {servicoSelecionado.inventario.map((inv, idx) => (
-                        <tr key={idx} style={{ borderBottom: idx !== servicoSelecionado.inventario.length - 1 ? '1px solid #1e293b' : 'none' }}>
-                          <td style={{ ...tableCellStyle, fontSize: '16px', fontWeight: 700, color: '#ffffff' }}>{inv.item}</td>
-                          <td style={{ ...tableCellStyle, fontSize: '18px', fontWeight: 800, color: '#4ade80', textAlign: 'center' }}>
-                            x{inv.quantidade}
-                          </td>
-                          <td style={{ ...tableCellStyle, fontSize: '15px', color: '#94a3b8' }}>
-                            {inv.categoria || 'Geral'}
+                      {todosOsServicos.map((s, idx) => (
+                        <tr
+                          key={s.id}
+                          onClick={() => setServicoSelecionado(s)}
+                          style={{ borderBottom: idx !== todosOsServicos.length - 1 ? '1px solid #334155' : 'none', cursor: 'pointer' }}
+                        >
+                          <td style={tableCellStyle}><span style={{ fontWeight: 800, color: '#38bdf8' }}>{s.data}</span> ({s.hora})</td>
+                          <td style={{ ...tableCellStyle, fontWeight: 700, color: '#fff' }}>{s.titulo}</td>
+                          <td style={{ ...tableCellStyle, color: '#4ade80', fontWeight: 800 }}>👤 {s.cliente}</td>
+                          <td style={{ ...tableCellStyle, fontWeight: 800, color: '#f8fafc' }}>{s.valor > 0 ? `${s.valor} €` : 'A Avaliar'}</td>
+                          <td style={tableCellStyle}>
+                            <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 700, backgroundColor: '#713f12', color: '#facc15' }}>
+                              {s.estadoPagamento}
+                            </span>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                )}
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* MODAL ADICIONAR CLIENTE / SERVIÇO */}
+      {(modalClienteAberto || modalServicoAberto) && (
+        <div style={modalOverlayStyle} onClick={() => { setModalClienteAberto(false); setModalServicoAberto(false); }}>
+          <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '12px', marginBottom: '16px' }}>
+              <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: '#38bdf8' }}>
+                {modalClienteAberto ? '👤 Registar Novo Cliente' : '➕ Agendar Novo Serviço'}
+              </h3>
+              <button onClick={() => { setModalClienteAberto(false); setModalServicoAberto(false); }} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '16px', cursor: 'pointer', fontWeight: 800 }}>✕</button>
+            </div>
+
+            <form onSubmit={guardarServico} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <label style={modalLabelStyle}>Nome do Cliente *</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Empresa Exemplo / João Silva"
+                  value={nomeCliente}
+                  onChange={(e) => setNomeCliente(e.target.value)}
+                  style={inputStyle}
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={modalLabelStyle}>Telemóvel</label>
+                  <input
+                    type="text"
+                    placeholder="912345678"
+                    value={telefoneCliente}
+                    onChange={(e) => setTelefoneCliente(e.target.value)}
+                    style={inputStyle}
+                  />
+                </div>
+                <div>
+                  <label style={modalLabelStyle}>E-mail</label>
+                  <input
+                    type="email"
+                    placeholder="cliente@email.com"
+                    value={emailCliente}
+                    onChange={(e) => setEmailCliente(e.target.value)}
+                    style={inputStyle}
+                  />
                 </div>
               </div>
 
-              {/* 4. NOTAS E OBSERVAÇÕES */}
-              {servicoSelecionado.notas && (
-                <div style={{ backgroundColor: '#0f172a', padding: '16px', borderRadius: '10px', borderLeft: '4px solid #facc15' }}>
-                  <span style={{ fontSize: '14px', fontWeight: 800, color: '#facc15', textTransform: 'uppercase' }}>⚠️ Notas & Observações da Operação</span>
-                  <p style={{ margin: '8px 0 0 0', fontSize: '16px', color: '#cbd5e1', lineHeight: '1.5', fontWeight: 600 }}>
-                    {servicoSelecionado.notas}
-                  </p>
+              <div>
+                <label style={modalLabelStyle}>Título do Serviço *</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Mudança T2 para Foz"
+                  value={tituloServico}
+                  onChange={(e) => setTituloServico(e.target.value)}
+                  style={inputStyle}
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={modalLabelStyle}>Dia do Mês (1 a 31)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="31"
+                    value={diaServico}
+                    onChange={(e) => setDiaServico(e.target.value)}
+                    style={inputStyle}
+                  />
                 </div>
-              )}
+                <div>
+                  <label style={modalLabelStyle}>Hora</label>
+                  <input
+                    type="text"
+                    value={horaServico}
+                    onChange={(e) => setHoraServico(e.target.value)}
+                    style={inputStyle}
+                  />
+                </div>
+              </div>
 
-            </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={modalLabelStyle}>Origem</label>
+                  <input
+                    type="text"
+                    placeholder="Morada de recolha"
+                    value={origemServico}
+                    onChange={(e) => setOrigemServico(e.target.value)}
+                    style={inputStyle}
+                  />
+                </div>
+                <div>
+                  <label style={modalLabelStyle}>Destino</label>
+                  <input
+                    type="text"
+                    placeholder="Morada de entrega"
+                    value={destinoServico}
+                    onChange={(e) => setDestinoServico(e.target.value)}
+                    style={inputStyle}
+                  />
+                </div>
+              </div>
 
-            {/* BOTÃO DE FECHAR */}
-            <button
-              onClick={() => setServicoSelecionado(null)}
-              style={{
-                width: '100%',
-                backgroundColor: '#0284c7',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '10px',
-                padding: '16px',
-                marginTop: '26px',
-                fontWeight: 800,
-                fontSize: '18px',
-                cursor: 'pointer',
-              }}
-            >
-              Fechar Detalhes
-            </button>
+              <div>
+                <label style={modalLabelStyle}>Valor (€)</label>
+                <input
+                  type="number"
+                  placeholder="250"
+                  value={valorServico}
+                  onChange={(e) => setValorServico(e.target.value)}
+                  style={inputStyle}
+                />
+              </div>
+
+              <button
+                type="submit"
+                style={{ backgroundColor: '#16a34a', color: '#fff', border: 'none', borderRadius: '8px', padding: '12px', fontWeight: 800, fontSize: '15px', cursor: 'pointer', marginTop: '10px' }}
+              >
+                Guardar e Registar no Mês
+              </button>
+            </form>
           </div>
         </div>
       )}
@@ -609,57 +487,12 @@ export default function DashboardCentralPage() {
   );
 }
 
-// ESTILOS REUTILIZÁVEIS
-const cardStyle: React.CSSProperties = {
-  backgroundColor: '#1e293b',
-  borderRadius: '12px',
-  padding: '20px',
-  border: '1px solid #334155',
-  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-};
-
-const cardHeaderStyle: React.CSSProperties = {
-  display: 'flex',
-  justify: 'space-between',
-  alignItems: 'center',
-  borderBottom: '1px solid #334155',
-  paddingBottom: '12px',
-};
-
-const modalLabelStyle: React.CSSProperties = {
-  fontSize: '13px',
-  color: '#94a3b8',
-  fontWeight: 800,
-  textTransform: 'uppercase',
-  display: 'block',
-};
-
-const modalValueStyle: React.CSSProperties = {
-  fontSize: '17px',
-  color: '#f8fafc',
-  fontWeight: 700,
-  marginTop: '4px',
-};
-
-const modalAddressStyle: React.CSSProperties = {
-  fontSize: '17px',
-  color: '#ffffff',
-  fontWeight: 700,
-  backgroundColor: '#0f172a',
-  padding: '12px 16px',
-  borderRadius: '8px',
-  border: '1px solid #334155',
-  marginTop: '4px',
-};
-
-const tableHeaderStyle: React.CSSProperties = {
-  padding: '12px 16px',
-  fontSize: '13px',
-  fontWeight: 800,
-  color: '#94a3b8',
-  textTransform: 'uppercase',
-};
-
-const tableCellStyle: React.CSSProperties = {
-  padding: '12px 16px',
-};
+// ESTILOS
+const cardStyle: React.CSSProperties = { backgroundColor: '#1e293b', borderRadius: '12px', padding: '18px', border: '1px solid #334155' };
+const cardHeaderStyle: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '10px' };
+const modalLabelStyle: React.CSSProperties = { fontSize: '12px', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '4px' };
+const inputStyle: React.CSSProperties = { width: '100%', backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '6px', padding: '10px', color: '#fff', fontSize: '14px', outline: 'none' };
+const tableHeaderStyle: React.CSSProperties = { padding: '12px 16px', fontSize: '12px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' };
+const tableCellStyle: React.CSSProperties = { padding: '12px 16px', fontSize: '14px' };
+const modalOverlayStyle: React.CSSProperties = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '20px' };
+const modalContentStyle: React.CSSProperties = { backgroundColor: '#1e293b', border: '2px solid #334155', borderRadius: '16px', padding: '24px', maxWidth: '500px', width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 20px 40px rgba(0,0,0,0.6)' };
