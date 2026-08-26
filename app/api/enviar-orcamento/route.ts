@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder_key');
+const resendApiKey = process.env.RESEND_API_KEY || 're_placeholder_key';
+const resend = new Resend(resendApiKey);
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
@@ -26,7 +27,6 @@ export async function POST(request: Request) {
       data_servico,
     } = body;
 
-    // 1. Guardar o pedido pendente na base de dados
     const { data: pedido, error: erroPedido } = await supabase
       .from('pedidos_pendentes')
       .insert([
@@ -54,12 +54,9 @@ export async function POST(request: Request) {
     }
 
     const pedidoId = pedido.id;
-
-    // Link de aprovação que o cliente vai receber por e-mail
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nortecargo.com';
     const linkAprovacao = `${baseUrl}/api/aprovar-orcamento?id=${pedidoId}`;
 
-    // 2. Enviar o e-mail ao cliente através do Resend
     if (email) {
       await resend.emails.send({
         from: 'NorteCargo <geral@nortecargo.com>',
