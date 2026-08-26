@@ -6,50 +6,82 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header style={{ width: '100%', backgroundColor: '#ffffff', borderBottom: '1px solid #cbd5e1', position: 'sticky', top: 0, zIndex: 100 }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        
-        {/* LOGO */}
-        <a href="/" style={{ textDecoration: 'none', fontSize: '26px', fontWeight: '900', color: '#0f2b5c' }}>
-          NORTE<span style={{ color: '#16a34a' }}>CARGO</span>
-        </a>
+    <nav style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '1rem 2rem',
+      backgroundColor: '#1f2937',
+      color: '#ffffff',
+      position: 'relative',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      width: '100%',
+      zIndex: 1000
+    }}>
+      <style jsx>{`
+        .desktop-links {
+          display: flex;
+          gap: 1.5rem;
+          align-items: center;
+        }
+        .hamburger-btn {
+          display: none;
+          background: none;
+          border: none;
+          color: #fff;
+          font-size: 1.5rem;
+          cursor: pointer;
+        }
+        .mobile-dropdown {
+          display: none;
+        }
 
-        {/* BOTÃO HAMBÚRGUER (Visível apenas em mobile) */}
-        <button 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          style={{
-            background: 'none',
-            border: 'none',
-            fontSize: '28px',
-            cursor: 'pointer',
-            color: '#0f2b5c',
-            padding: '4px',
-            display: 'block', // Em CSS puro para garantir que aparece no telemóvel
-          }}
-          aria-label="Menu"
-        >
-          {mobileMenuOpen ? '✕' : '☰'}
-        </button>
+        @media (max-width: 768px) {
+          .desktop-links {
+            display: none !important;
+          }
+          .hamburger-btn {
+            display: block !important;
+          }
+          .mobile-dropdown {
+            display: ${mobileMenuOpen ? 'flex' : 'none'} !important;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: #1f2937;
+            padding: 1.5rem 2rem;
+            gap: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-top: 1px solid #374151;
+          }
+        }
+      `}</style>
+
+      <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>NorteCargo</div>
+
+      {/* Links no PC */}
+      <div className="desktop-links">
+        <a href="#home" style={{ color: '#fff', textDecoration: 'none' }}>Início</a>
+        <a href="#services" style={{ color: '#fff', textDecoration: 'none' }}>Serviços</a>
+        <a href="#contact" style={{ color: '#fff', textDecoration: 'none' }}>Contacto</a>
       </div>
 
-      {/* MENU MOBILE EXPANSÍVEL (Aparece por baixo em bloco quando clicado) */}
-      {mobileMenuOpen && (
-        <nav style={{
-          backgroundColor: '#ffffff',
-          width: '100%',
-          padding: '20px',
-          borderBottom: '2px solid #cbd5e1',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-          boxShadow: '0 10px 15px rgba(0,0,0,0.1)',
-        }}>
-          <a href="/" style={{ color: '#334155', textDecoration: 'none', fontWeight: 'bold', fontSize: '18px' }} onClick={() => setMobileMenuOpen(false)}>Início</a>
-          <a href="/servicos" style={{ color: '#334155', textDecoration: 'none', fontWeight: 'bold', fontSize: '18px' }} onClick={() => setMobileMenuOpen(false)}>Serviços</a>
-          <a href="/agendamento" style={{ color: '#334155', textDecoration: 'none', fontWeight: 'bold', fontSize: '18px' }} onClick={() => setMobileMenuOpen(false)}>Agendamento</a>
-          <a href="/contactos" style={{ color: '#16a34a', textDecoration: 'none', fontWeight: 'bold', fontSize: '18px' }} onClick={() => setMobileMenuOpen(false)}>Contacto</a>
-        </nav>
-      )}
-    </header>
+      {/* Botão Hambúrguer Telemóvel */}
+      <button 
+        className="hamburger-btn"
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+      >
+        {mobileMenuOpen ? '✕' : '☰'}
+      </button>
+
+      {/* Menu Dropdown Telemóvel */}
+      <div className="mobile-dropdown">
+        <a href="#home" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => setMobileMenuOpen(false)}>Início</a>
+        <a href="#services" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => setMobileMenuOpen(false)}>Serviços</a>
+        <a href="#contact" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => setMobileMenuOpen(false)}>Contacto</a>
+      </div>
+    </nav>
   );
 }
