@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export async function GET(request: Request) {
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     return new NextResponse('ID de pedido inválido.', { status: 400 });
   }
 
-  // 1. Buscar os dados do pedido pendente
+  // 1. Buscar os dados do orçamento pendente
   const { data: pedido, error: erroPedido } = await supabase
     .from('pedidos_pendentes')
     .select('*')
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     .single();
 
   if (erroPedido || !pedido) {
-    return new NextResponse('Pedido não encontrado ou já processado.', { status: 404 });
+    return new NextResponse('Orçamento não encontrado ou já processado.', { status: 404 });
   }
 
   // 2. Verificar se o cliente já existe pelo e-mail
@@ -55,7 +55,7 @@ export async function GET(request: Request) {
     clienteId = novoCliente.id;
   }
 
-  // 3. Criar o serviço completo na base de dados (alimenta automaticamente a agenda e a ficha)
+  // 3. Criar o serviço completo na base de dados
   const { error: erroServico } = await supabase.from('servicos').insert([
     {
       cliente_id: clienteId,
@@ -82,7 +82,7 @@ export async function GET(request: Request) {
     .update({ estado_pedido: 'Aprovado' })
     .eq('id', pedidoId);
 
-  // 5. Redirecionar o cliente para uma página de sucesso bonita no vosso site
+  // 5. Redirecionar com página de sucesso
   return new NextResponse(`
     <!DOCTYPE html>
     <html lang="pt">
@@ -99,7 +99,7 @@ export async function GET(request: Request) {
       <body>
         <div class="card">
           <h1>Orçamento Aprovado!</h1>
-          <p>Obrigado pela sua confirmação. O seu serviço foi agendado com sucesso na <strong>NorteCargo</strong> e a nossa equipa foi notificada.</p>
+          <p>Obrigado pela sua confirmação. O seu serviço foi agendado com sucesso na <strong>NorteCargo</strong>.</p>
         </div>
       </body>
     </html>
