@@ -3,76 +3,92 @@ import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder_key');
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const {
-      pedidoId,
-      emailCliente,
-      nomeCliente,
-      descricao,
-      precoHora,
-      minimoHoras,
-      totalSemIva,
-      totalComIva,
-      dataServico,
+      nome_cliente,
+      telemovel,
+      email,
+      morada_cliente,
+      morada_carga,
+      morada_descarga,
+      descricao_servico,
+      horas_trabalhadas,
+      material_usado,
+      valor_sem_iva,
+      valor_com_iva,
+      data_servico,
     } = body;
 
-    if (!emailCliente) {
-      return NextResponse.json({ error: 'E-mail do cliente em falta.' }, { status: 400 });
-    }
-
-    // 1. Enviar o e-mail para o cliente (exemplo com o Resend)
-    const dataEmail = await resend.emails.send({
-      from: 'Nortecargo <onboarding@resend.dev>', // Substitui pelo teu domínio verificado no Resend se já tiveres
-      to: [emailCliente],
-      subject: 'Proposta de Orçamento - Nortecargo',
-      html: `
-        <div style="font-family: Arial, sans-serif; color: #334155; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
-          <h2 style="color: #0f2b5c;">Olá, ${nomeCliente}!</h2>
-          <p>Agradecemos o seu contacto com a <strong>Nortecargo</strong>. Abaixo encontra os detalhes da proposta para o seu serviço de mudanças:</p>
-          
-          <div style="background-color: #f8fafc; padding: 16px; border-radius: 6px; margin: 16px 0;">
-            <p style="margin: 4px 0;"><strong>Detalhes do Inventário / Serviço:</strong></p>
-            <p style="white-space: pre-line; color: #475569; font-size: 14px;">${descricao}</p>
-            <p style="margin: 8px 0 4px 0;"><strong>Data Pretendida:</strong> ${dataServico ? new Date(dataServico).toLocaleDateString('pt-PT') : 'A combinar'}</p>
-          </div>
-
-          <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 16px; border-radius: 6px; margin: 16px 0;">
-            <p style="margin: 4px 0; color: #166534;"><strong>Condições Aplicadas:</strong></p>
-            <ul style="color: #14532d; padding-left: 20px; margin: 4px 0;">
-              <li>Preço por Hora: <strong>${precoHora} €</strong></li>
-              <li>Mínimo de Horas: <strong>${minimoHoras}h</strong></li>
-              <li>Total Estimado (Sem IVA): <strong>${totalSemIva} €</strong></li>
-              <li><strong>Total Estimado (Com IVA a 23%): ${totalComIva} €</strong></li>
-            </ul>
-          </div>
-
-          <p>Se pretender avançar com a confirmação, por favor responda a este e-mail ou entre em contacto connosco.</p>
-          <p style="margin-top: 24px; font-size: 12px; color: #94a3b8;">Nortecargo - Soluções em Mudanças e Transportes</p>
-        </div>
-      `,
-    });
-
-    console.log('E-mail enviado com sucesso:', dataEmail);
-
-    // 2. Atualizar o estado do pedido no Supabase para 'Aprovado' (ou 'Enviado') para sair da lista de pendentes
-    const { error: updateError } = await supabase
+    // 1. Guardar o pedido pendente na base de dados
+    const { data: pedido, error: erroPedido } = await supabase
       .from('pedidos_pendentes')
-      .update({ estado_pedido: 'Aprovado' })
-      .eq('id', pedidoId);
+      .insert([
+        {
+          nome_cliente,
+          telemovel,
+          email,
+          morada_cliente,
+          morada_carga,
+          morada_descarga,
+          descricao_servico,
+          horas_trabalhadas,
+          material_usado,
+          valor_sem_iva,
+          valor_com_iva,
+          data_servico,
+          estado_pedido: 'Pendente',
+        },
+      ])
+      .select('id')
+      .single();
 
-    if (updateError) {
-      console.error('Erro ao atualizar estado no Supabase:', updateError.message);
+    if (erroPedido || !pedido) {
+      return NextResponse.json({ error: 'Erro ao guardar o orçamento pendente: ' + (erroPedido?.message || 'Desconhecido') }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true });
-  } catch (err: any) {
-    console.error('Erro na API de envio de orçamento:', err);
-    return NextResponse.json({ error: err.message || 'Erro interno no servidor' }, { status: 500 });
+    const pedidoId = pedido.id;
+
+    // Link de aprovação que o cliente vai receber por e-mail
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nortecargo.com';
+    const linkAprovacao = `${baseUrl}/api/aprovar-orcamento?id=${pedidoId}`;
+
+    // 2. Enviar o e-mail ao cliente através do Resend
+    if (email) {
+      await resend.emails.send({
+        from: 'NorteCargo <geral@nortecargo.com>',
+        to: [email],
+        subject: 'Orçamento e Proposta de Serviço - NorteCargo',
+        html: `
+          <div style="font-family: Arial, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 30px; border-radius: 8px;">
+            <h2 style="color: #38bdf8;">Olá ${nome_cliente},</h2>
+            <p>Obrigado por solicitar os nossos serviços na <strong>NorteCargo</strong>. Segue-se o resumo do orçamento:</p>
+            
+            <div style="background: #1e293b; padding: 20px; border-radius: 6px; margin: 20px 0; border: 1px solid #334155;">
+              <p><strong>Descrição:</strong> ${descricao_servico}</p>
+              <p><strong>Carga:</strong> ${morada_carga}</p>
+              <p><strong>Descarga:</strong> ${morada_descarga}</p>
+              <p><strong>Valor Total (c/ IVA):</strong> ${valor_com_iva} €</p>
+            </div>
+
+            <p>Para confirmar e aprovar este orçamento, clique no botão abaixo:</p>
+            
+            <a href="${linkAprovacao}" style="background-color: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; margin-top: 15px;">Aprovar Orçamento</a>
+
+            <p style="margin-top: 30px; font-size: 12px; color: #94a3b8;">Se não reconhece este pedido, por favor ignore este e-mail.</p>
+          </div>
+        `,
+      });
+    }
+
+    return NextResponse.json({ success: true, message: 'Orçamento enviado com sucesso!' });
+  } catch (error: any) {
+    return NextResponse.json({ error: 'Erro interno: ' + error.message }, { status: 500 });
   }
 }
