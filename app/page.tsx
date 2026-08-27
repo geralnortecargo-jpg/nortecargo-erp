@@ -25,51 +25,12 @@ export default function HomePage() {
           <span style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#16a34a' }}>Geral@nortecargo.pt</span>
         </div>
 
-        {/* ESTILOS RESPONSIVOS DIRETOS */}
-        <style jsx>{`
-          .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-          }
-          .hamburger-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: #1f2937;
-          }
-          .mobile-menu-dropdown {
-            display: none;
-          }
-
-          @media (max-width: 768px) {
-            .nav-links {
-              display: none !important;
-            }
-            .hamburger-btn {
-              display: block !important;
-            }
-            .mobile-menu-dropdown {
-              display: ${mobileMenuOpen ? 'flex' : 'none'} !important;
-              flex-direction: column;
-              position: absolute;
-              top: 100%;
-              left: 0;
-              width: 100%;
-              background-color: #ffffff;
-              padding: 1.5rem;
-              gap: 1rem;
-              box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-              border-top: 1px solid #e5e7eb;
-              z-index: 1000;
-            }
-          }
-        `}</style>
-
-        {/* LINKS DE DESKTOP */}
-        <div className="nav-links">
+        {/* LINKS DE DESKTOP (Esconde automaticamente em ecrãs pequenos via inline style controlado por JS/Flex) */}
+        <div style={{
+          display: 'flex',
+          gap: '1.5rem',
+          alignItems: 'center',
+        }} className="desktop-links-container">
           <a href="#home" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Início</a>
           <a href="#empresas" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Empresas</a>
           <a href="#servicos" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Serviços</a>
@@ -77,24 +38,45 @@ export default function HomePage() {
           <a href="#contacto" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Contacto</a>
         </div>
 
-        {/* BOTÃO HAMBÚRGUER (MOBILE) */}
+        {/* BOTÃO HAMBÚRGUER (Visível no mobile) */}
         <button 
-          className="hamburger-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Abrir Menu"
+          style={{
+            background: 'none',
+            border: 'none',
+            fontSize: '1.8rem',
+            cursor: 'pointer',
+            color: '#1f2937',
+            padding: '0.2rem 0.5rem',
+            display: 'block' // Forçado a aparecer
+          }}
+          aria-label="Menu"
         >
           {mobileMenuOpen ? '✕' : '☰'}
         </button>
-
-        {/* MENU DROPDOWN MOBILE */}
-        <div className="mobile-menu-dropdown">
-          <a href="#home" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem' }} onClick={() => setMobileMenuOpen(false)}>Início</a>
-          <a href="#empresas" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem' }} onClick={() => setMobileMenuOpen(false)}>Empresas</a>
-          <a href="#servicos" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem' }} onClick={() => setMobileMenuOpen(false)}>Serviços</a>
-          <a href="#agendamento" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem' }} onClick={() => setMobileMenuOpen(false)}>Agendamento</a>
-          <a href="#contacto" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem' }} onClick={() => setMobileMenuOpen(false)}>Contacto</a>
-        </div>
       </nav>
+
+      {/* MENU DROPDOWN MOBILE (Aparece logo abaixo da navbar se o estado for true) */}
+      {mobileMenuOpen && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: '#ffffff',
+          padding: '1.5rem',
+          gap: '1rem',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+          borderBottom: '1px solid #e5e7eb',
+          position: 'absolute',
+          width: '100%',
+          zIndex: 1000
+        }}>
+          <a href="#home" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem', padding: '0.5rem 0' }} onClick={() => setMobileMenuOpen(false)}>Início</a>
+          <a href="#empresas" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem', padding: '0.5rem 0' }} onClick={() => setMobileMenuOpen(false)}>Empresas</a>
+          <a href="#servicos" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem', padding: '0.5rem 0' }} onClick={() => setMobileMenuOpen(false)}>Serviços</a>
+          <a href="#agendamento" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem', padding: '0.5rem 0' }} onClick={() => setMobileMenuOpen(false)}>Agendamento</a>
+          <a href="#contacto" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem', padding: '0.5rem 0' }} onClick={() => setMobileMenuOpen(false)}>Contacto</a>
+        </div>
+      )}
 
       {/* CONTEÚDO */}
       <section style={{ padding: '3rem 1rem', textAlign: 'center' }}>
