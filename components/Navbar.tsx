@@ -37,17 +37,29 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Menu Dropdown do Telemóvel */}
+      {/* Menu Dropdown do Telemóvel Ajustado */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#1e293b] border-t border-[#334155] absolute w-full left-0 top-16 shadow-2xl">
-          <div className="px-4 pt-2 pb-4 space-y-2 flex flex-col">
-            <a href="#home" onClick={() => setMobileMenuOpen(false)} className="text-slate-300 hover:text-white hover:bg-slate-700 block px-3 py-3 rounded-md text-base font-medium">
+        <div className="md:hidden bg-[#0f172a] border-t border-[#334155] absolute w-full left-0 top-16 shadow-2xl">
+          <div className="px-4 pt-3 pb-5 space-y-2 flex flex-col">
+            <a 
+              href="#home" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="text-slate-200 hover:text-white hover:bg-slate-800 block px-3 py-3 rounded-md text-base font-medium transition"
+            >
               Início
             </a>
-            <a href="#services" onClick={() => setMobileMenuOpen(false)} className="text-slate-300 hover:text-white hover:bg-slate-700 block px-3 py-3 rounded-md text-base font-medium">
+            <a 
+              href="#services" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="text-slate-200 hover:text-white hover:bg-slate-800 block px-3 py-3 rounded-md text-base font-medium transition"
+            >
               Serviços
             </a>
-            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-slate-300 hover:text-white hover:bg-slate-700 block px-3 py-3 rounded-md text-base font-medium">
+            <a 
+              href="#contact" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="text-slate-200 hover:text-white hover:bg-slate-800 block px-3 py-3 rounded-md text-base font-medium transition"
+            >
               Contacto
             </a>
           </div>
