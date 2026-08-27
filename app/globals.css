@@ -1,40 +1,75 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
-  background-color: #e2e8f0 !important;
-  color: #0f172a !important;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 18px !important; /* Letra base bem maior em todo o site */
-  line-height: 1.6 !important;
-  margin: 0;
-  padding: 0;
+/* Estilos base da Navbar */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1f2937;
+  color: #ffffff;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
+  z-index: 1000;
 }
 
-/* Forçar fontes grandes e legíveis em inputs e botões */
-input, select, textarea, button {
-  font-size: 17px !important;
+.navbar-logo {
+  font-size: 1.25rem;
+  font-weight: bold;
 }
 
-/* Forçar visualização clara em todas as caixas de texto */
-input {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
+.nav-links-desktop {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
 }
 
-input:focus {
-  border-color: #1a365d !important;
-  outline: 2px solid #1a365d !important;
-  
+.nav-links-desktop a {
+  color: #fff;
+  text-decoration: none;
 }
+
+/* O botão hambúrguer começa escode-se no PC por defeito */
+.hamburger-button {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.mobile-dropdown-menu {
+  display: none;
+}
+
+/* Regras para Telemóvel (Ecrãs até 768px) */
 @media (max-width: 768px) {
-  .desktop-links-container {
+  .nav-links-desktop {
     display: none !important;
   }
-}
-@media (min-width: 769px) {
-  /* Se quiseres esconder o botão de hambúrguer no PC, descomenta a linha abaixo */
-  /* button { display: none !important; } */
+
+  .hamburger-button {
+    display: block !important;
+  }
+
+  .mobile-dropdown-menu {
+    display: flex !important;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #1f2937;
+    padding: 1.5rem 2rem;
+    gap: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border-top: 1px solid #374151;
+    z-index: 1001;
+  }
+
+  .mobile-dropdown-menu a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+  }
 }
