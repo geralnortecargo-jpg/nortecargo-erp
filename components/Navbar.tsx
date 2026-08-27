@@ -18,70 +18,58 @@ export default function Navbar() {
       width: '100%',
       zIndex: 1000
     }}>
-      <style jsx>{`
-        .desktop-links {
-          display: flex;
-          gap: 1.5rem;
-          align-items: center;
-        }
-        .hamburger-btn {
-          display: none;
-          background: none;
-          border: none;
-          color: #fff;
-          font-size: 1.5rem;
-          cursor: pointer;
-        }
-        .mobile-dropdown {
-          display: none;
-        }
-
-        @media (max-width: 768px) {
-          .desktop-links {
-            display: none !important;
-          }
-          .hamburger-btn {
-            display: block !important;
-          }
-          .mobile-dropdown {
-            display: ${mobileMenuOpen ? 'flex' : 'none'} !important;
-            flex-direction: column;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background-color: #1f2937;
-            padding: 1.5rem 2rem;
-            gap: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            border-top: 1px solid #374151;
-          }
-        }
-      `}</style>
-
       <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>NorteCargo</div>
 
-      {/* Links no PC */}
-      <div className="desktop-links">
+      {/* Links Normais (Escondidos via CSS Global/Média ou visíveis no desktop) */}
+      <div className="desktop-links" style={{
+        display: 'flex',
+        gap: '1.5rem',
+        alignItems: 'center',
+      }}>
         <a href="#home" style={{ color: '#fff', textDecoration: 'none' }}>Início</a>
         <a href="#services" style={{ color: '#fff', textDecoration: 'none' }}>Serviços</a>
         <a href="#contact" style={{ color: '#fff', textDecoration: 'none' }}>Contacto</a>
       </div>
 
-      {/* Botão Hambúrguer Telemóvel */}
+      {/* Botão Hambúrguer (Sempre visível para testes, depois filtramos se necessário) */}
       <button 
-        className="hamburger-btn"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: '#fff',
+          fontSize: '1.8rem',
+          cursor: 'pointer',
+          padding: '0.2rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
       >
         {mobileMenuOpen ? '✕' : '☰'}
       </button>
 
-      {/* Menu Dropdown Telemóvel */}
-      <div className="mobile-dropdown">
-        <a href="#home" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => setMobileMenuOpen(false)}>Início</a>
-        <a href="#services" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => setMobileMenuOpen(false)}>Serviços</a>
-        <a href="#contact" style={{ color: '#fff', textDecoration: 'none' }} onClick={() => setMobileMenuOpen(false)}>Contacto</a>
-      </div>
+      {/* Menu Dropdown Telemóvel (Renderizado condicionalmente pelo Estado do React) */}
+      {mobileMenuOpen && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          width: '100%',
+          backgroundColor: '#1f2937',
+          padding: '1.5rem 2rem',
+          gap: '1rem',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
+          borderTop: '1px solid #374151',
+          zIndex: 1001
+        }}>
+          <a href="#home" style={{ color: '#fff', textDecoration: 'none', fontSize: '1.1rem' }} onClick={() => setMobileMenuOpen(false)}>Início</a>
+          <a href="#services" style={{ color: '#fff', textDecoration: 'none', fontSize: '1.1rem' }} onClick={() => setMobileMenuOpen(false)}>Serviços</a>
+          <a href="#contact" style={{ color: '#fff', textDecoration: 'none', fontSize: '1.1rem' }} onClick={() => setMobileMenuOpen(false)}>Contacto</a>
+        </div>
+      )}
     </nav>
   );
 }
