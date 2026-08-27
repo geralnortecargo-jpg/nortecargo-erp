@@ -34,3 +34,7 @@ input:focus {
     display: none !important;
   }
 }
+@media (min-width: 769px) {
+  /* Se quiseres esconder o botão de hambúrguer no PC, descomenta a linha abaixo */
+  /* button { display: none !important; } */
+}
