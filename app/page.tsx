@@ -2,19 +2,7 @@
 
 import React, { useState } from 'react';
 
-const SLIDES = [
-  {
-    title: 'Transportes e Mudanças com Confiança e Rigor',
-    description: 'Soluções completas de mudanças residenciais e empresariais em todo o país. Calcule o seu inventário e agende o serviço em minutos.',
-  },
-  {
-    title: 'Qualidade e Profissionalismo',
-    description: 'Trabalho garantido, segurança total para os seus bens e dedicação absoluta em cada transporte.',
-  },
-];
-
 export default function HomePage() {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -27,11 +15,9 @@ export default function HomePage() {
         alignItems: 'center',
         padding: '1rem 1.5rem',
         backgroundColor: '#ffffff',
-        color: '#1f2937',
         position: 'relative',
         boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-        borderBottom: '1px solid #e5e7eb',
-        flexWrap: 'wrap'
+        borderBottom: '1px solid #e5e7eb'
       }}>
         {/* LOGO / INFO TOPO */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -43,7 +29,7 @@ export default function HomePage() {
         <style jsx>{`
           .nav-links {
             display: flex;
-            gap: 1.2rem;
+            gap: 1.5rem;
             align-items: center;
           }
           .hamburger-btn {
@@ -84,11 +70,11 @@ export default function HomePage() {
 
         {/* LINKS DE DESKTOP */}
         <div className="nav-links">
-          <a href="#home" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500, fontSize: '0.95rem' }}>Início</a>
-          <a href="#empresas" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500, fontSize: '0.95rem' }}>Empresas</a>
-          <a href="#servicos" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500, fontSize: '0.95rem' }}>Serviços</a>
-          <a href="#agendamento" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500, fontSize: '0.95rem' }}>Agendamento</a>
-          <a href="#contacto" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500, fontSize: '0.95rem' }}>Contacto</a>
+          <a href="#home" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Início</a>
+          <a href="#empresas" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Empresas</a>
+          <a href="#servicos" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Serviços</a>
+          <a href="#agendamento" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Agendamento</a>
+          <a href="#contacto" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Contacto</a>
         </div>
 
         {/* BOTÃO HAMBÚRGUER (MOBILE) */}
@@ -110,42 +96,10 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* CONTEÚDO PRINCIPAL / SLIDER */}
+      {/* CONTEÚDO */}
       <section style={{ padding: '3rem 1rem', textAlign: 'center' }}>
-        <div style={{
-          maxWidth: '800px',
-          margin: '0 auto',
-          borderRadius: '8px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
-          backgroundColor: '#ffffff',
-          color: '#1f2937',
-          padding: '2.5rem 1.5rem',
-          border: '1px solid #e5e7eb'
-        }}>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#111827', lineHeight: '1.3' }}>
-            {SLIDES[currentSlide].title}
-          </h1>
-          <p style={{ marginTop: '1rem', fontSize: '1rem', color: '#4b5563', lineHeight: '1.6' }}>
-            {SLIDES[currentSlide].description}
-          </p>
-
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '2rem' }}>
-            {SLIDES.map((_, index) => (
-              <span
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                style={{
-                  width: '12px',
-                  height: '12px',
-                  borderRadius: '50%',
-                  cursor: 'pointer',
-                  backgroundColor: index === currentSlide ? '#16a34a' : '#d1d5db',
-                  transition: 'background-color 0.3s ease'
-                }}
-              />
-            ))}
-          </div>
-        </div>
+        <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold' }}>Transportes e Mudanças com Rigor</h1>
+        <p style={{ marginTop: '1rem', color: '#4b5563' }}>Soluções completas de mudanças em todo o país.</p>
       </section>
 
     </div>
