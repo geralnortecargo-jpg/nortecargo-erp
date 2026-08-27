@@ -310,4 +310,4 @@ export default function DetalheClientePage() {
 const thStyle: React.CSSProperties = { padding: '12px', fontSize: '12px', color: '#94a3b8', textTransform: 'uppercase' };
 const tdStyle: React.CSSProperties = { padding: '12px', fontSize: '14px', verticalAlign: 'middle' };
 const labelStyle: React.CSSProperties = { display: 'block', fontSize: '12px', color: '#cbd5e1', marginBottom: '4px' };
-const inputStyle: React.CSSProperties = { width: '100%', backgroundColor: '#0f172a', color: '#fff', border: '1px solid #334155', padding: '9px', borderRadius: '8px', outline: 'none', boxSizing: 'box-border' };
+const inputStyle: React.CSSProperties = { width: '100%', backgroundColor: '#0f172a', color: '#fff', border: '1px solid #334155', padding: '9px', borderRadius: '8px', outline: 'none', boxSizing: 'border-box' };
