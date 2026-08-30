@@ -6,82 +6,104 @@ export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6', color: '#1f2937', fontFamily: 'Arial, sans-serif' }}>
+    <div className="min-h-screen bg-gray-100 text-gray-800 font-sans">
       
-      {/* NAVBAR */}
-      <nav style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '1rem 1.5rem',
-        backgroundColor: '#ffffff',
-        position: 'relative',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-        borderBottom: '1px solid #e5e7eb'
-      }}>
-        {/* LOGO / INFO TOPO */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>Orçamentos: 965 531 009</span>
-          <span style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#16a34a' }}>Geral@nortecargo.pt</span>
+      {/* 1. BARRA SUPERIOR DE CONTACTOS */}
+      <div className="bg-gray-100 border-b border-gray-200 text-xs text-gray-600 py-2 px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <span>Orçamentos: <strong className="text-gray-900">965 531 009</strong></span>
+            <span className="hidden sm:inline text-gray-400">|</span>
+            <a href="mailto:Geral@nortecargo.pt" className="font-bold text-green-600 hover:underline">
+              Geral@nortecargo.pt
+            </a>
+          </div>
+          <div className="hidden sm:block text-gray-500 font-medium">
+            Transportes Nacionais e Internacionais
+          </div>
+        </div>
+      </div>
+
+      {/* 2. NAVBAR PRINCIPAL */}
+      <nav className="bg-white border-b border-gray-200 shadow-sm relative z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex justify-between items-center h-20">
+          
+          {/* LOGO NORTECARGO */}
+          <a href="#home" className="flex items-center space-x-2">
+            <span className="font-black text-2xl md:text-3xl tracking-tight text-gray-900 uppercase">
+              NORTE<span className="text-blue-900">CARGO</span>
+            </span>
+          </a>
+
+          {/* LINKS DE DESKTOP (Só aparecem a partir do ecrã médio 'md') */}
+          <div className="hidden md:flex items-center space-x-8 font-medium text-gray-700">
+            <a href="#home" className="hover:text-blue-900 transition-colors">Início</a>
+            <a href="#empresas" className="hover:text-blue-900 transition-colors">Empresas</a>
+            <a href="#servicos" className="hover:text-blue-900 transition-colors">Serviços</a>
+            <a href="#agendamento" className="hover:text-blue-900 transition-colors">Agendamento</a>
+            <a href="#contacto" className="hover:text-blue-900 transition-colors">Contacto</a>
+          </div>
+
+          {/* BOTÃO HAMBÚRGUER (Escondido em PC, visível apenas no telemóvel 'md:hidden') */}
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-2xl text-gray-700 focus:outline-none"
+            aria-label="Menu"
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
         </div>
 
-        {/* LINKS DE DESKTOP (Esconde automaticamente em ecrãs pequenos via inline style controlado por JS/Flex) */}
-        <div style={{
-          display: 'flex',
-          gap: '1.5rem',
-          alignItems: 'center',
-        }} className="desktop-links-container">
-          <a href="#home" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Início</a>
-          <a href="#empresas" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Empresas</a>
-          <a href="#servicos" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Serviços</a>
-          <a href="#agendamento" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Agendamento</a>
-          <a href="#contacto" style={{ color: '#1f2937', textDecoration: 'none', fontWeight: 500 }}>Contacto</a>
-        </div>
-
-        {/* BOTÃO HAMBÚRGUER (Visível no mobile) */}
-        <button 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          style={{
-            background: 'none',
-            border: 'none',
-            fontSize: '1.8rem',
-            cursor: 'pointer',
-            color: '#1f2937',
-            padding: '0.2rem 0.5rem',
-            display: 'block' // Forçado a aparecer
-          }}
-          aria-label="Menu"
-        >
-          {mobileMenuOpen ? '✕' : '☰'}
-        </button>
+        {/* MENU DROPDOWN MOBILE (Só abre no telemóvel ao clicar) */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-b border-gray-200 shadow-lg px-6 py-4 flex flex-col space-y-3 absolute w-full left-0 top-full">
+            <a 
+              href="#home" 
+              className="text-gray-800 text-lg font-medium py-1 hover:text-blue-900"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Início
+            </a>
+            <a 
+              href="#empresas" 
+              className="text-gray-800 text-lg font-medium py-1 hover:text-blue-900"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Empresas
+            </a>
+            <a 
+              href="#servicos" 
+              className="text-gray-800 text-lg font-medium py-1 hover:text-blue-900"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Serviços
+            </a>
+            <a 
+              href="#agendamento" 
+              className="text-gray-800 text-lg font-medium py-1 hover:text-blue-900"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Agendamento
+            </a>
+            <a 
+              href="#contacto" 
+              className="text-gray-800 text-lg font-medium py-1 hover:text-blue-900"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Contacto
+            </a>
+          </div>
+        )}
       </nav>
 
-      {/* MENU DROPDOWN MOBILE (Aparece logo abaixo da navbar se o estado for true) */}
-      {mobileMenuOpen && (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: '#ffffff',
-          padding: '1.5rem',
-          gap: '1rem',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-          borderBottom: '1px solid #e5e7eb',
-          position: 'absolute',
-          width: '100%',
-          zIndex: 1000
-        }}>
-          <a href="#home" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem', padding: '0.5rem 0' }} onClick={() => setMobileMenuOpen(false)}>Início</a>
-          <a href="#empresas" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem', padding: '0.5rem 0' }} onClick={() => setMobileMenuOpen(false)}>Empresas</a>
-          <a href="#servicos" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem', padding: '0.5rem 0' }} onClick={() => setMobileMenuOpen(false)}>Serviços</a>
-          <a href="#agendamento" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem', padding: '0.5rem 0' }} onClick={() => setMobileMenuOpen(false)}>Agendamento</a>
-          <a href="#contacto" style={{ color: '#1f2937', textDecoration: 'none', fontSize: '1.1rem', padding: '0.5rem 0' }} onClick={() => setMobileMenuOpen(false)}>Contacto</a>
-        </div>
-      )}
-
-      {/* CONTEÚDO */}
-      <section style={{ padding: '3rem 1rem', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold' }}>Transportes e Mudanças com Rigor</h1>
-        <p style={{ marginTop: '1rem', color: '#4b5563' }}>Soluções completas de mudanças em todo o país.</p>
+      {/* CONTEÚDO PRINCIPAL */}
+      <section id="home" className="py-16 px-4 text-center max-w-4xl mx-auto">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+          Transportes e Mudanças com Rigor
+        </h1>
+        <p className="mt-4 text-lg text-gray-600">
+          Soluções completas de mudanças em todo o país.
+        </p>
       </section>
 
     </div>
