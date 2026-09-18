@@ -476,7 +476,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   mediaCol: {
     flex: '0 0 320px',
     display: 'flex',
-    justify: 'center',
+    justifyContent: 'center', // Corrigido aqui
     width: '100%',
   },
   routeCard: {
