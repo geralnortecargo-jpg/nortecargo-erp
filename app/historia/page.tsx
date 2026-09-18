@@ -18,7 +18,7 @@ const SLIDES_3 = [
   'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
 ];
 
-// Imagem do Porto de Leixões (Vista Aérea) para a faixa azul
+// Imagem do Porto de Leixões (Vista Aérea) para a faixa superior
 const FOTO_LEIXOES_AEREA = 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1600&q=80';
 
 // Componente do Mini Slider Quadrado
@@ -48,10 +48,23 @@ function MiniSlider({ images }: { images: string[] }) {
   );
 }
 
-// Navbar Superior
+// Navbar Superior com Suporte Responsivo Móvel
 function Navbar() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <header style={navStyles.headerWrapper}>
+      {/* BARRA SUPERIOR DE CONTACTOS */}
       <div style={navStyles.topBar}>
         <div style={navStyles.topBarContainer}>
           <span>📞 Orçamentos: <strong>965 531 009</strong></span>
@@ -59,6 +72,7 @@ function Navbar() {
         </div>
       </div>
 
+      {/* BARRA PRINCIPAL DE NAVEGAÇÃO */}
       <div style={navStyles.navContainer}>
         <div style={navStyles.logoArea}>
           <a href="/" style={navStyles.logoLink}>
@@ -71,21 +85,47 @@ function Navbar() {
             </div>
           </a>
         </div>
-        <nav style={navStyles.navLinks}>
-          <a href="/" style={navStyles.link}>Início</a>
-          <a href="/historia" style={{ ...navStyles.link, ...navStyles.activeLink }}>História</a>
-          <a href="/#agendamento" style={navStyles.link}>Agendamento</a>
-          <a href="/#servicos" style={navStyles.link}>Serviços</a>
-          <a href="#contactos" style={navStyles.link}>Contactos</a>
-        </nav>
+
+        {/* NAVEGAÇÃO DESKTOP */}
+        {!isMobile && (
+          <nav style={navStyles.navLinks}>
+            <a href="/" style={navStyles.link}>Início</a>
+            <a href="/historia" style={{ ...navStyles.link, ...navStyles.activeLink }}>História</a>
+            <a href="/agendamento" style={navStyles.link}>Agendamento</a>
+            <a href="/servicos" style={navStyles.link}>Serviços</a>
+            <a href="#contactos" style={navStyles.link}>Contactos</a>
+          </nav>
+        )}
+
+        {/* BOTÃO MENU HAMBÚRGUER MÓVEL */}
+        {isMobile && (
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            style={navStyles.hamburgerButton}
+            aria-label="Abrir Menu"
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
+        )}
       </div>
+
+      {/* MENU EXPANSÍVEL MÓVEL */}
+      {isMobile && mobileMenuOpen && (
+        <div style={navStyles.mobileDropdown}>
+          <a href="/" style={navStyles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Início</a>
+          <a href="/historia" style={{ ...navStyles.mobileNavLink, color: '#16a34a', fontWeight: 'bold' }} onClick={() => setMobileMenuOpen(false)}>História</a>
+          <a href="/agendamento" style={navStyles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Agendamento</a>
+          <a href="/servicos" style={navStyles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Serviços</a>
+          <a href="#contactos" style={navStyles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Contactos</a>
+        </div>
+      )}
     </header>
   );
 }
 
 export default function HistoriaPage() {
   return (
-    <div>
+    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', backgroundColor: '#f8fafc', minHeight: '100vh' }}>
       <Navbar />
 
       {/* CABEÇALHO COM IMAGEM AÉREA DO PORTO DE LEIXÕES */}
@@ -99,7 +139,7 @@ export default function HistoriaPage() {
       </section>
 
       {/* CONTEÚDO EM BLOCOS ALTERNADOS */}
-      <div style={styles.container}>
+      <main style={styles.container}>
 
         {/* BLOCO 1: Texto Esquerda | Imagem Direita */}
         <div style={styles.row}>
@@ -145,18 +185,18 @@ export default function HistoriaPage() {
 
         {/* BOTÃO DE AGENDAMENTO */}
         <div style={styles.ctaBox}>
-          <h3>Precisa de agendar a sua mudança?</h3>
-          <p>Utilize a nossa plataforma online ou entre em contacto direto connosco.</p>
-          <a href="/#agendamento" style={styles.btnPrimary}>Ir para Agendamento</a>
+          <h3 style={{ margin: '0 0 8px 0', color: '#0f172a', fontSize: '20px' }}>Precisa de agendar a sua mudança?</h3>
+          <p style={{ margin: '0 0 16px 0', color: '#475569', fontSize: '15px' }}>Utilize a nossa plataforma online ou entre em contacto direto connosco.</p>
+          <a href="/agendamento" style={styles.btnPrimary}>Ir para Agendamento</a>
         </div>
 
-      </div>
+      </main>
 
       {/* FOOTER */}
       <footer id="contactos" style={styles.footer}>
         <div style={styles.footerContainer}>
           <div>
-            <h3 style={{ margin: '0 0 12px 0' }}>NORTECARGO</h3>
+            <h3 style={{ margin: '0 0 12px 0', color: '#ffffff' }}>NORTECARGO</h3>
             <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: '1.6' }}>
               Especialistas em serviços de mudanças e transportes com total segurança e profissionalismo.
             </p>
@@ -181,7 +221,8 @@ const navStyles: { [key: string]: React.CSSProperties } = {
     boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
     position: 'sticky',
     top: 0,
-    zIndex: 100,
+    zIndex: 1000,
+    backgroundColor: '#ffffff',
   },
   topBar: {
     backgroundColor: '#0f172a',
@@ -200,15 +241,17 @@ const navStyles: { [key: string]: React.CSSProperties } = {
   },
   navContainer: {
     backgroundColor: '#ffffff',
-    maxWidth: '100%',
+    maxWidth: '1200px',
+    margin: '0 auto',
     padding: '12px 20px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottom: '1px solid #e2e8f0',
+    boxSizing: 'border-box',
   },
   logoArea: {
-    maxWidth: '1200px',
+    display: 'flex',
+    alignItems: 'center',
   },
   logoLink: {
     textDecoration: 'none',
@@ -236,6 +279,7 @@ const navStyles: { [key: string]: React.CSSProperties } = {
   navLinks: {
     display: 'flex',
     gap: '28px',
+    alignItems: 'center',
   },
   link: {
     color: '#334155',
@@ -246,6 +290,36 @@ const navStyles: { [key: string]: React.CSSProperties } = {
   activeLink: {
     color: '#16a34a',
     fontWeight: 700,
+  },
+  hamburgerButton: {
+    background: 'none',
+    border: 'none',
+    fontSize: '24px',
+    cursor: 'pointer',
+    color: '#16a34a',
+    padding: '4px 8px',
+  },
+  mobileDropdown: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: '#ffffff',
+    borderBottom: '1px solid #e2e8f0',
+    boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
+    padding: '16px 20px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    zIndex: 999,
+  },
+  mobileNavLink: {
+    color: '#334155',
+    textDecoration: 'none',
+    fontWeight: 600,
+    fontSize: '16px',
+    padding: '8px 0',
+    borderBottom: '1px solid #f1f5f9',
   },
 };
 
@@ -286,9 +360,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     flex: '1 1 450px',
   },
   mediaCol: {
-    flex: '0 0 350px',
+    flex: '0 0 320px',
     display: 'flex',
     justifyContent: 'center',
+    margin: '0 auto',
   },
   blockTitle: {
     fontSize: '26px',
@@ -334,7 +409,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     textDecoration: 'none',
     fontWeight: 700,
     display: 'inline-block',
-    marginTop: '12px',
   },
   footer: {
     backgroundColor: '#0f172a',

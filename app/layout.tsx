@@ -1,29 +1,32 @@
-import type { Metadata } from "next";
-import { Inter, Roboto_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const robotoMono = Roboto_Mono({
-  variable: "--font-roboto-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "NorteCargo ERP",
-  description: "Sistema de gestão e transportes da NorteCargo",
+  title: "NorteCargo - Mudanças e Transportes",
+  description: "Transportes e Logística Nacional e Internacional",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html
-      lang="pt"
-      className={`${inter.variable} ${robotoMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="pt" style={{ width: '100%', overflowX: 'hidden' }}>
+      <body style={{ margin: 0, padding: 0, width: '100%', overflowX: 'hidden', fontFamily: 'system-ui, sans-serif', backgroundColor: '#f8fafc' }}>
+        <Navbar />
+        <main style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden', boxSizing: 'border-box' }}>
+          {children}
+        </main>
+      </body>
     </html>
   );
 }
