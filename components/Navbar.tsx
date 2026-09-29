@@ -15,80 +15,78 @@ export default function Navbar() {
   };
 
   return (
-    <header style={styles.header}>
-      {/* BARRA SUPERIOR DE CONTACTOS / INFO */}
-      <div style={styles.topBar}>
-        <div style={styles.topBarContainer}>
+    <header className="w-full bg-white shadow-md sticky top-0 z-50">
+      {/* BARRA SUPERIOR DE CONTACTOS (Visível em todos, oculta frase secundária no mobile) */}
+      <div className="bg-slate-900 text-slate-200 text-xs py-1.5 px-4">
+        <div className="max-w-6xl mx-auto flex justify-between items-center flex-wrap">
           <span>
-            Orçamentos: <strong>965 531 009</strong> | Geral@nortecargo.pt
+            Orçamentos: <strong className="text-white">965 531 009</strong> | Geral@nortecargo.pt
           </span>
-          <span className="hidden-mobile">
+          <span className="hidden md:inline">
             Transportes Nacionais e Internacionais
           </span>
         </div>
       </div>
 
-      {/* NAVEGAÇÃO PRINCIPAL */}
-      <nav style={styles.navContainer}>
+      {/* BARRA DE NAVEGAÇÃO PRINCIPAL */}
+      <nav className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* LOGÓTIPO */}
-        <Link href="/" style={styles.logoLink} onClick={closeMobileMenu}>
-          <span style={styles.logoText}>
-            NORTE<span style={styles.logoHighlight}>CARGO</span>
-          </span>
+        <Link href="/" onClick={closeMobileMenu} className="text-2xl font-black text-slate-900 tracking-tight no-underline">
+          NORTE<span className="text-blue-700">CARGO</span>
         </Link>
 
-        {/* LINKS DESKTOP */}
-        <ul style={styles.desktopMenu} className="nav-links">
-          <li><Link href="/" style={styles.navLink}>Início</Link></li>
-          <li><Link href="/servicos" style={styles.navLink}>Serviços</Link></li>
-          <li><Link href="/agendamento" style={styles.navLink}>Orçamento</Link></li>
-          <li><Link href="/grupagem" style={styles.navLink}>Grupagem</Link></li>
-          <li><Link href="/historia" style={styles.navLink}>História</Link></li>
-          <li><Link href="/contactos" style={styles.navLink}>Contacto</Link></li>
+        {/* MENU DESKTOP (Aparece apenas em ecrãs médios/grandes: md:flex) */}
+        <ul className="hidden md:flex items-center gap-6 list-none m-0 p-0">
+          <li><Link href="/" className="text-slate-700 font-semibold text-sm hover:text-blue-700 transition-colors no-underline">Início</Link></li>
+          <li><Link href="/servicos" className="text-slate-700 font-semibold text-sm hover:text-blue-700 transition-colors no-underline">Serviços</Link></li>
+          <li><Link href="/agendamento" className="text-slate-700 font-semibold text-sm hover:text-blue-700 transition-colors no-underline">Orçamento</Link></li>
+          <li><Link href="/grupagem" className="text-slate-700 font-semibold text-sm hover:text-blue-700 transition-colors no-underline">Grupagem</Link></li>
+          <li><Link href="/historia" className="text-slate-700 font-semibold text-sm hover:text-blue-700 transition-colors no-underline">História</Link></li>
+          <li><Link href="/contactos" className="text-slate-700 font-semibold text-sm hover:text-blue-700 transition-colors no-underline">Contacto</Link></li>
         </ul>
 
-        {/* BOTÃO HAMBÚRGUER MOBILE */}
+        {/* BOTÃO HAMBÚRGUER MOBILE (Aparece apenas em telemóveis: md:hidden) */}
         <button
           type="button"
           onClick={toggleMobileMenu}
-          style={styles.mobileMenuButton}
-          aria-label="Toggle menu"
+          className="md:hidden p-2 rounded-lg border border-slate-300 text-slate-900 text-xl leading-none focus:outline-none"
+          aria-label="Alternar menu"
         >
           {isMobileMenuOpen ? '✕' : '☰'}
         </button>
       </nav>
 
-      {/* MENU DESPLEGÁVEL MOBILE */}
+      {/* MENU DESPLEGÁVEL MOBILE (Apenas quando aberto no telemóvel) */}
       {isMobileMenuOpen && (
-        <div style={styles.mobileDropdown}>
-          <ul style={styles.mobileMenuList}>
+        <div className="md:hidden bg-white border-t border-slate-200 px-4 py-3">
+          <ul className="flex flex-col gap-3 list-none m-0 p-0">
             <li>
-              <Link href="/" style={styles.mobileNavLink} onClick={closeMobileMenu}>
+              <Link href="/" onClick={closeMobileMenu} className="block text-slate-900 font-semibold text-base py-1 no-underline">
                 Início
               </Link>
             </li>
             <li>
-              <Link href="/servicos" style={styles.mobileNavLink} onClick={closeMobileMenu}>
+              <Link href="/servicos" onClick={closeMobileMenu} className="block text-slate-900 font-semibold text-base py-1 no-underline">
                 Serviços
               </Link>
             </li>
             <li>
-              <Link href="/agendamento" style={styles.mobileNavLink} onClick={closeMobileMenu}>
+              <Link href="/agendamento" onClick={closeMobileMenu} className="block text-slate-900 font-semibold text-base py-1 no-underline">
                 Orçamento
               </Link>
             </li>
             <li>
-              <Link href="/grupagem" style={styles.mobileNavLink} onClick={closeMobileMenu}>
+              <Link href="/grupagem" onClick={closeMobileMenu} className="block text-slate-900 font-semibold text-base py-1 no-underline">
                 Grupagem
               </Link>
             </li>
             <li>
-              <Link href="/historia" style={styles.mobileNavLink} onClick={closeMobileMenu}>
+              <Link href="/historia" onClick={closeMobileMenu} className="block text-slate-900 font-semibold text-base py-1 no-underline">
                 História
               </Link>
             </li>
             <li>
-              <Link href="/contactos" style={styles.mobileNavLink} onClick={closeMobileMenu}>
+              <Link href="/contactos" onClick={closeMobileMenu} className="block text-slate-900 font-semibold text-base py-1 no-underline">
                 Contacto
               </Link>
             </li>
@@ -98,93 +96,3 @@ export default function Navbar() {
     </header>
   );
 }
-
-const styles: { [key: string]: React.CSSProperties } = {
-  header: {
-    width: '100%',
-    backgroundColor: '#ffffff',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-    position: 'sticky',
-    top: 0,
-    zIndex: 1000,
-  },
-  topBar: {
-    backgroundColor: '#0f172a',
-    color: '#e2e8f0',
-    fontSize: '12px',
-    padding: '6px 16px',
-  },
-  topBarContainer: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-  navContainer: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '12px 20px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  logoLink: {
-    textDecoration: 'none',
-  },
-  logoText: {
-    fontSize: '22px',
-    fontWeight: 900,
-    color: '#0f172a',
-    letterSpacing: '-0.5px',
-  },
-  logoHighlight: {
-    color: '#1d4ed8',
-  },
-  desktopMenu: {
-    display: 'flex',
-    listStyle: 'none',
-    gap: '20px',
-    margin: 0,
-    padding: 0,
-    alignItems: 'center',
-  },
-  navLink: {
-    textDecoration: 'none',
-    color: '#334155',
-    fontWeight: 600,
-    fontSize: '14px',
-    transition: 'color 0.2s',
-  },
-  mobileMenuButton: {
-    backgroundColor: 'transparent',
-    border: '1px solid #cbd5e1',
-    borderRadius: '6px',
-    fontSize: '20px',
-    padding: '4px 10px',
-    cursor: 'pointer',
-    color: '#0f172a',
-  },
-  mobileDropdown: {
-    backgroundColor: '#ffffff',
-    borderTop: '1px solid #e2e8f0',
-    padding: '12px 20px',
-  },
-  mobileMenuList: {
-    listStyle: 'none',
-    margin: 0,
-    padding: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-  },
-  mobileNavLink: {
-    textDecoration: 'none',
-    color: '#0f172a',
-    fontWeight: 600,
-    fontSize: '15px',
-    display: 'block',
-    padding: '6px 0',
-  },
-};
