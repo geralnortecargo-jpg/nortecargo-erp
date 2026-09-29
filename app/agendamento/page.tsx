@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://lowczwppugpklmqeyohr.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxvd2N6d3BwdWdwa2xtcWV5b2hyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1MTEzMDUsImV4cCI6MjEwMzA4NzMwNX0.RHtRy3wUhO-NlPrc7fu0HH4vA-5yfjiWnHG_hMLh1UI';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const CATALOGO_ITENS = {
