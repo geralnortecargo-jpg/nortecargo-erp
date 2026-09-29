@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import Navbar from '@/components/Navbar'; // Import da Navbar original
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -175,9 +174,6 @@ export default function AgendamentoPage() {
   return (
     <div style={{ backgroundColor: '#f8fafc', minHeight: '100vh', paddingBottom: '60px' }}>
       
-      {/* NAVBAR PRINCIPAL RESTAURADA */}
-      <Navbar />
-
       {/* BANNER ROTATIVO NO TOPO */}
       <section style={styles.heroSection} id="home">
         {SLIDES.map((slide, index) => (
