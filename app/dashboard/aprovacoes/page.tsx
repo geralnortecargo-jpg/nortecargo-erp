@@ -3,14 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-// Força o Next.js a renderizar esta página apenas em runtime e não no build estático
-export const dynamic = 'force-dynamic';
-
-// Fallback seguro para evitar o erro "supabaseUrl is required" durante o build da Vercel
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
 interface PedidoPendente {
   id: string;
   nome_cliente: string;
@@ -29,27 +21,38 @@ export default function AprovacoesPage() {
   const [pedidos, setPedidos] = useState<PedidoPendente[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Estados para controlar os inputs de preço de cada pedido individualmente
+  // Estados para controlar os inputs de preço de cada pedido
   const [precosHora, setPrecosHora] = useState<{ [key: string]: string }>({});
   const [minHoras, setMinHoras] = useState<{ [key: string]: string }>({});
 
-  const carregarPedidos = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('pedidos_pendentes')
-      .select('*')
-      .eq('estado_pedido', 'Pendente')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Erro ao carregar pedidos pendentes:', error.message);
-    } else {
-      setPedidos(data || []);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
+    // Instancia o cliente do Supabase apenas dentro do browser/client-side em runtime
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      setLoading(false);
+      return;
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    const carregarPedidos = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('pedidos_pendentes')
+        .select('*')
+        .eq('estado_pedido', 'Pendente')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Erro ao carregar pedidos pendentes:', error.message);
+      } else {
+        setPedidos(data || []);
+      }
+      setLoading(false);
+    };
+
     carregarPedidos();
   }, []);
 
@@ -67,9 +70,8 @@ export default function AprovacoesPage() {
       return;
     }
 
-    // Calcular valor total estimado
     const totalSemIva = parseFloat(preco) * parseFloat(horas);
-    const totalComIva = totalSemIva * 1.23; // IVA a 23%
+    const totalComIva = totalSemIva * 1.23;
 
     try {
       const response = await fetch('/api/enviar-orcamento', {
@@ -92,7 +94,7 @@ export default function AprovacoesPage() {
 
       if (response.ok) {
         alert('Orçamento enviado com sucesso para o e-mail do cliente!');
-        carregarPedidos();
+        window.location.reload();
       } else {
         alert('Erro ao enviar e-mail: ' + resultado.error);
       }
