@@ -1,17 +1,10 @@
-import type { Metadata, Viewport } from "next";
-import Navbar from "@/components/Navbar";
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
+import Navbar from '@/components/Navbar'; // Ajusta o caminho se necessário
 
 export const metadata: Metadata = {
-  title: "NorteCargo - Mudanças e Transportes",
-  description: "Transportes e Logística Nacional e Internacional",
-};
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  title: 'NorteCargo - Transportes e Mudanças',
+  description: 'Soluções completas de mudanças e logística em todo o país.',
 };
 
 export default function RootLayout({
@@ -20,12 +13,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt" style={{ width: '100%', overflowX: 'hidden' }}>
-      <body style={{ margin: 0, padding: 0, width: '100%', overflowX: 'hidden', fontFamily: 'system-ui, sans-serif', backgroundColor: '#f8fafc' }}>
+    <html lang="pt">
+      <body style={{ margin: 0, padding: 0 }}>
+        {/* Navbar Global Unificada */}
         <Navbar />
-        <main style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden', boxSizing: 'border-box' }}>
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );
