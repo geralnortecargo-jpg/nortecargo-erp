@@ -3,11 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-// Inicialização direta do Supabase (sem depender de ficheiros externos)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
 interface Lancamento {
   id: string;
   created_at?: string;
@@ -34,8 +29,22 @@ export default function LancamentosPage() {
     metodo_pagamento: 'MBWAY',
   });
 
+  // Função auxiliar para obter o cliente Supabase apenas no navegador
+  const getSupabaseClient = () => {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+    if (!supabaseUrl || !supabaseAnonKey) return null;
+    return createClient(supabaseUrl, supabaseAnonKey);
+  };
+
   const carregarLancamentos = async () => {
     setLoading(true);
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('financeiro')
       .select('*')
@@ -56,6 +65,12 @@ export default function LancamentosPage() {
   const handleGuardarLancamento = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!novoLancamento.descricao || !novoLancamento.valor) return;
+
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      alert('Erro de configuração do Supabase.');
+      return;
+    }
 
     const { data, error } = await supabase
       .from('financeiro')
@@ -89,6 +104,12 @@ export default function LancamentosPage() {
 
   const handleEliminarLancamento = async (id: string) => {
     if (!confirm('Tem a certeza de que deseja eliminar este registo?')) return;
+
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      alert('Erro de configuração do Supabase.');
+      return;
+    }
 
     const { error } = await supabase.from('financeiro').delete().eq('id', id);
 

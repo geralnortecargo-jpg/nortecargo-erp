@@ -4,10 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
 interface Cliente {
   id: string;
   nome: string;
@@ -29,8 +25,22 @@ export default function ClientesPage() {
     morada: '',
   });
 
+  // Função auxiliar para obter o cliente Supabase em runtime
+  const getSupabaseClient = () => {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+    if (!supabaseUrl || !supabaseAnonKey) return null;
+    return createClient(supabaseUrl, supabaseAnonKey);
+  };
+
   const carregarClientes = async () => {
     setLoading(true);
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('clientes')
       .select('*')
@@ -51,6 +61,12 @@ export default function ClientesPage() {
   const handleGuardarCliente = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!novoCliente.nome) return;
+
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      alert('Erro de configuração do Supabase.');
+      return;
+    }
 
     const { data, error } = await supabase
       .from('clientes')
@@ -75,6 +91,12 @@ export default function ClientesPage() {
 
   const handleEliminarCliente = async (id: string) => {
     if (!confirm('Tem a certeza de que deseja eliminar este cliente?')) return;
+
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      alert('Erro de configuração do Supabase.');
+      return;
+    }
 
     const { error } = await supabase.from('clientes').delete().eq('id', id);
 
