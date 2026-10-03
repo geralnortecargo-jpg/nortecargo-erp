@@ -23,7 +23,6 @@ export default function Navbar() {
 
   return (
     <header>
-      {/* 1. BARRA SUPERIOR DE CONTACTOS */}
       <div style={{ backgroundColor: '#f1f5f9', borderBottom: '1px solid #e2e8f0', padding: '8px 16px', fontSize: '13px', color: '#64748b' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -39,16 +38,13 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* 2. NAVBAR PRINCIPAL */}
       <nav style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', position: 'relative', zIndex: 1000 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           
-          {/* LOGO */}
           <a href="#home" style={{ textDecoration: 'none', fontSize: '24px', fontWeight: '900', color: '#0f172a', letterSpacing: '-0.5px' }}>
             NORTE<span style={{ color: '#1e3a8a' }}>CARGO</span>
           </a>
 
-          {/* LINKS DESKTOP */}
           {mounted && !isMobile && (
             <div style={{ display: 'flex', gap: '28px', alignItems: 'center' }}>
               <a href="#home" style={styles.navLink}>Início</a>
@@ -59,7 +55,6 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* BOTÃO HAMBÚRGUER MOBILE */}
           {mounted && isMobile && (
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -81,7 +76,6 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* MENU MOBILE */}
         {mounted && isMobile && mobileMenuOpen && (
           <div style={{
             position: 'absolute',
