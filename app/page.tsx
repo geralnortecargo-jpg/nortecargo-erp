@@ -3,8 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 
+interface ModalData {
+  title: string;
+  intro: string;
+  steps: { title: string; desc: string }[];
+}
+
 export default function HomePage() {
-  // Estado para o Formulário de Orçamento
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -15,7 +20,10 @@ export default function HomePage() {
     mensagem: '',
   });
 
-  // Estado e dados para o Carrossel do Hero
+  // Estado para controlar o Pop-up Modal
+  const [activeModal, setActiveModal] = useState<ModalData | null>(null);
+
+  // Dados dos Slides do Hero
   const slides = [
     {
       url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80',
@@ -61,12 +69,46 @@ export default function HomePage() {
     alert('Pedido de orçamento enviado com sucesso! Entraremos em contacto brevemente.');
   };
 
+  // Conteúdo detalhado para os Pop-ups em Vidro
+  const modalContent: Record<string, ModalData> = {
+    residenciais: {
+      title: 'Mudanças Residenciais',
+      intro: 'O nosso processo chave-na-mão garante a máxima tranquilidade para si e para a sua família durante a mudança de casa.',
+      steps: [
+        { title: '1. Avaliação e Planeamento', desc: 'Levantamento das volumetrias, acessos (escadas/elevadores) e definição do plano logístico.' },
+        { title: '2. Desmontagem e Embalamento', desc: 'Proteção de móveis com plástico bolha e mantas térmicas. Embalamento etiquetado de louças, roupas e objetos frágeis.' },
+        { title: '3. Carregamento e Elevação Exterior', desc: 'Acomodação segura na frota e utilização de elevador exterior quando necessário para evitar danos no imóvel.' },
+        { title: '4. Transporte e Montagem no Destino', desc: 'Transporte com rastreio, descarregamento, montagem integral do mobiliário e colocação no local final.' }
+      ]
+    },
+    escritorio: {
+      title: 'Mudanças de Escritório & Empresas',
+      intro: 'Planificação rigorosa orientada para minimizar o tempo de inatividade da sua empresa e proteger o seu ativo.',
+      steps: [
+        { title: '1. Inventário e Identificação', desc: 'Mapeamento de postos de trabalho, documentação, ficheiros confidenciais e equipamentos de informática.' },
+        { title: '2. Embalamento Técnico de TI', desc: 'Acondicionamento especializado de computadores, servidores, monitores e periféricos com proteção antiestática.' },
+        { title: '3. Desmontagem de Mobiliário de Escritório', desc: 'Desmontagem técnica de bancadas, secretárias compostas e estantes industriais.' },
+        { title: '4. Reinstalação Rápida', desc: 'Transporte prioritário e posicionamento do mobiliário no novo espaço conforme o layout pré-definido.' }
+      ]
+    },
+    grupagens: {
+      title: 'Grupagens de Carga & LTL',
+      intro: 'A solução ideal para enviar mercadorias sem necessidade de contratar um camião completo, reduzindo custos de transporte.',
+      steps: [
+        { title: '1. Consolidação da Carga', desc: 'Recolha da sua mercadoria ou palete e agrupamento num centro logístico estratégico.' },
+        { title: '2. Triagem e Trâmites Alfandegários', desc: 'Gestão da documentação de transporte, CMR e desalfandegamento em rotas internacionais.' },
+        { title: '3. Otimização de Rota', desc: 'Integração em frotas regulares que percorrem Portugal e a Europa de forma eficiente.' },
+        { title: '4. Entrega Agendada', desc: 'Descarga controlada na morada do destinatário com confirmação e comprovativo de entrega.' }
+      ]
+    }
+  };
+
   return (
     <main style={{ minHeight: '100vh', backgroundColor: '#f8fafc', color: '#0f172a', fontFamily: 'sans-serif' }}>
-      {/* 1. Navbar Mantida Intacta */}
+      {/* 1. Navbar Integradada */}
       <Navbar />
 
-      {/* 2. Hero Section com Carrossel e Efeito de Vidro */}
+      {/* 2. Hero Section com Carrossel e Glassmorphism */}
       <section id="home" style={{ position: 'relative', width: '100%', height: '520px', overflow: 'hidden' }}>
         {slides.map((slide, index) => (
           <div
@@ -87,31 +129,9 @@ export default function HomePage() {
           />
         ))}
 
-        {/* Camada de sobreposição para contraste */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(15, 23, 42, 0.4)',
-            zIndex: 2
-          }}
-        />
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(15, 23, 42, 0.4)', zIndex: 2 }} />
 
-        {/* Cartão de Vidro (Glassmorphism) */}
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 3,
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0 20px'
-          }}
-        >
+        <div style={{ position: 'relative', zIndex: 3, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 20px' }}>
           <div
             style={{
               maxWidth: '850px',
@@ -135,157 +155,178 @@ export default function HomePage() {
             </p>
 
             <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a
-                href="#agendamento"
-                style={{
-                  backgroundColor: '#1e3a8a',
-                  color: '#ffffff',
-                  padding: '14px 28px',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontWeight: 'bold',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
-                }}
-              >
+              <a href="#agendamento" style={{ backgroundColor: '#1e3a8a', color: '#ffffff', padding: '14px 28px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)' }}>
                 Pedir Orçamento Grátis
               </a>
-              <a
-                href="#servicos"
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.85)',
-                  color: '#0f172a',
-                  padding: '14px 28px',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontWeight: '600',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                }}
-              >
+              <a href="#servicos" style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', color: '#0f172a', padding: '14px 28px', borderRadius: '8px', textDecoration: 'none', fontWeight: '600', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}>
                 Ver Serviços
               </a>
             </div>
           </div>
         </div>
 
-        {/* Setas de Navegação */}
-        <button
-          onClick={prevSlide}
-          style={{
-            position: 'absolute',
-            left: '20px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            zIndex: 4,
-            backgroundColor: 'rgba(0,0,0,0.4)',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '50%',
-            width: '44px',
-            height: '44px',
-            fontSize: '20px',
-            cursor: 'pointer',
-            backdropFilter: 'blur(4px)'
-          }}
-        >
-          ❮
-        </button>
-        <button
-          onClick={nextSlide}
-          style={{
-            position: 'absolute',
-            right: '20px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            zIndex: 4,
-            backgroundColor: 'rgba(0,0,0,0.4)',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '50%',
-            width: '44px',
-            height: '44px',
-            fontSize: '20px',
-            cursor: 'pointer',
-            backdropFilter: 'blur(4px)'
-          }}
-        >
-          ❯
-        </button>
+        <button onClick={prevSlide} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', zIndex: 4, backgroundColor: 'rgba(0,0,0,0.4)', color: '#ffffff', border: 'none', borderRadius: '50%', width: '44px', height: '44px', fontSize: '20px', cursor: 'pointer', backdropFilter: 'blur(4px)' }}>❮</button>
+        <button onClick={nextSlide} style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', zIndex: 4, backgroundColor: 'rgba(0,0,0,0.4)', color: '#ffffff', border: 'none', borderRadius: '50%', width: '44px', height: '44px', fontSize: '20px', cursor: 'pointer', backdropFilter: 'blur(4px)' }}>❯</button>
 
-        {/* Indicadores do Carrossel */}
         <div style={{ position: 'absolute', bottom: '20px', width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', zIndex: 4 }}>
           {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              style={{
-                width: index === currentIndex ? '28px' : '10px',
-                height: '10px',
-                borderRadius: '5px',
-                backgroundColor: index === currentIndex ? '#ffffff' : 'rgba(255,255,255,0.5)',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'all 0.3s'
-              }}
-            />
+            <button key={index} onClick={() => setCurrentIndex(index)} style={{ width: index === currentIndex ? '28px' : '10px', height: '10px', borderRadius: '5px', backgroundColor: index === currentIndex ? '#ffffff' : 'rgba(255,255,255,0.5)', border: 'none', cursor: 'pointer', transition: 'all 0.3s' }} />
           ))}
         </div>
       </section>
 
-      {/* 3. Secção Empresas */}
-      <section id="empresas" style={{ padding: '60px 20px', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+      {/* 3. Secção de Serviços (3 Caixas lado a lado com Pop-up) */}
+      <section id="servicos" style={{ padding: '70px 20px', backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: '700', textAlign: 'center', marginBottom: '12px' }}>
-            Soluções para Empresas
+          <h2 style={{ fontSize: '30px', fontWeight: '800', textAlign: 'center', marginBottom: '12px' }}>
+            Soluções & Especialidades
           </h2>
-          <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '40px' }}>
-            Apoio logístico, mudança de instalações e transporte dedicado para o seu negócio.
+          <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '48px', fontSize: '16px' }}>
+            Apoio completo para habitações, empresas e logística de mercadorias.
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-            <div style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '20px', color: '#1e3a8a', marginBottom: '8px' }}>Relocalização de Escritórios</h3>
-              <p style={{ color: '#475569', fontSize: '15px' }}>Mudanças rápidas e eficientes com o mínimo de impacto na operação da sua empresa.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '28px' }}>
+            {/* Caixa 1: Mudanças Residenciais */}
+            <div style={{ backgroundColor: '#f8fafc', padding: '32px 24px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+              <div>
+                <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#1e3a8a', marginBottom: '12px' }}>Mudanças Residenciais</h3>
+                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '24px' }}>
+                  Serviço completo para a sua nova casa com embalamento profissional, desmontagem, transporte seguro e montagem no destino.
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveModal(modalContent.residenciais)}
+                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '12px 20px', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', width: '100%' }}
+              >
+                Saber Mais
+              </button>
             </div>
-            <div style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '20px', color: '#1e3a8a', marginBottom: '8px' }}>Logística & Transporte</h3>
-              <p style={{ color: '#475569', fontSize: '15px' }}>Entregas e distribuição regular de carga e mercadorias a nível nacional e internacional.</p>
+
+            {/* Caixa 2: Mudanças de Escritório */}
+            <div style={{ backgroundColor: '#f8fafc', padding: '32px 24px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+              <div>
+                <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#1e3a8a', marginBottom: '12px' }}>Mudanças de Escritório</h3>
+                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '24px' }}>
+                  Relocalização rápida de empresas, escritórios e estabelecimentos comerciais com garantia de minima interrupção do negócio.
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveModal(modalContent.escritorio)}
+                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '12px 20px', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', width: '100%' }}
+              >
+                Saber Mais
+              </button>
             </div>
-            <div style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '20px', color: '#1e3a8a', marginBottom: '8px' }}>Gestão de Frota Dedicada</h3>
-              <p style={{ color: '#475569', fontSize: '15px' }}>Viaturas e motoristas qualificados à disposição das suas necessidades logísticas.</p>
+
+            {/* Caixa 3: Grupagens de Carga */}
+            <div style={{ backgroundColor: '#f8fafc', padding: '32px 24px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+              <div>
+                <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#1e3a8a', marginBottom: '12px' }}>Grupagens de Carga</h3>
+                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '24px' }}>
+                  Transporte otimizado de volumes e paletes em regime partilhado, reduzindo custos para envios nacionais e internacionais.
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveModal(modalContent.grupagens)}
+                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '12px 20px', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', width: '100%' }}
+              >
+                Saber Mais
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. Secção Serviços */}
-      <section id="servicos" style={{ padding: '60px 20px', backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: '700', textAlign: 'center', marginBottom: '12px' }}>
-            Os Nossos Serviços
-          </h2>
-          <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '40px' }}>
-            Serviços chave-na-mão adaptados a cada necessidade.
-          </p>
+      {/* Pop-up Modal em Vidro (Glassmorphism) */}
+      {activeModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}
+          onClick={() => setActiveModal(null)}
+        >
+          <div
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.92)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
+              borderRadius: '16px',
+              maxWidth: '650px',
+              width: '100%',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              padding: '32px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
+              position: 'relative',
+              color: '#0f172a'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Botão Fechar */}
+            <button
+              onClick={() => setActiveModal(null)}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                backgroundColor: '#e2e8f0',
+                border: 'none',
+                borderRadius: '50%',
+                width: '36px',
+                height: '36px',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                color: '#334155'
+              }}
+            >
+              ✕
+            </button>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-            <div style={{ backgroundColor: '#f8fafc', padding: '24px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Mudanças Residenciais</h3>
-              <p style={{ color: '#64748b', fontSize: '14px' }}>Embalamento, desmontagem, transporte e montagem de mobiliário em novas habitações.</p>
+            <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#1e3a8a', marginBottom: '12px' }}>
+              {activeModal.title}
+            </h2>
+            <p style={{ color: '#475569', fontSize: '15px', marginBottom: '24px', lineHeight: '1.5' }}>
+              {activeModal.intro}
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '28px' }}>
+              {activeModal.steps.map((step, idx) => (
+                <div key={idx} style={{ backgroundColor: '#ffffff', padding: '16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                  <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#0f172a', marginBottom: '4px' }}>
+                    {step.title}
+                  </h4>
+                  <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: '1.5' }}>
+                    {step.desc}
+                  </p>
+                </div>
+              ))}
             </div>
-            <div style={{ backgroundColor: '#f8fafc', padding: '24px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Elevador Exterior</h3>
-              <p style={{ color: '#64748b', fontSize: '14px' }}>Operação de elevador de fachada para manuseamento seguro em pisos elevados.</p>
-            </div>
-            <div style={{ backgroundColor: '#f8fafc', padding: '24px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Embalamento Especializado</h3>
-              <p style={{ color: '#64748b', fontSize: '14px' }}>Proteção reforçada para itens frágeis, objetos de valor e equipamento eletrónico.</p>
-            </div>
+
+            <button
+              onClick={() => setActiveModal(null)}
+              style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', width: '100%', fontSize: '15px' }}
+            >
+              Fechar Detalhes
+            </button>
           </div>
         </div>
-      </section>
+      )}
 
-      {/* 5. Secção Agendamento / Orçamento */}
+      {/* 4. Secção Agendamento e Formulário de Orçamento */}
       <section id="agendamento" style={{ padding: '60px 20px', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto', backgroundColor: '#ffffff', padding: '32px', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #e2e8f0' }}>
           <h2 style={{ fontSize: '26px', fontWeight: '700', textAlign: 'center', marginBottom: '8px' }}>
@@ -328,7 +369,7 @@ export default function HomePage() {
               <select name="tipoServico" value={formData.tipoServico} onChange={handleChange} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
                 <option value="mudanca_residencial">Mudança Residencial</option>
                 <option value="mudanca_empresarial">Mudança Empresarial</option>
-                <option value="transporte_carga">Transporte de Carga</option>
+                <option value="grupagem_carga">Grupagem de Carga</option>
                 <option value="outro">Outro Serviço</option>
               </select>
             </div>
@@ -345,7 +386,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. Secção Contacto */}
+      {/* 5. Secção Contacto */}
       <section id="contacto" style={{ padding: '60px 20px', backgroundColor: '#ffffff' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>Contacte-nos</h2>
