@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 interface ModalData {
   title: string;
   intro: string;
+  icon: React.ReactNode;
   steps: { title: string; desc: string }[];
 }
 
@@ -20,10 +21,8 @@ export default function HomePage() {
     mensagem: '',
   });
 
-  // Estado para controlar o Pop-up Modal
   const [activeModal, setActiveModal] = useState<ModalData | null>(null);
 
-  // Dados dos Slides do Hero
   const slides = [
     {
       url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80',
@@ -69,31 +68,57 @@ export default function HomePage() {
     alert('Pedido de orçamento enviado com sucesso! Entraremos em contacto brevemente.');
   };
 
-  // Conteúdo detalhado para os Pop-ups em Vidro
+  // Ícones SVG para dar vida visual aos cartões
+  const HomeIcon = () => (
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+  );
+
+  const OfficeIcon = () => (
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+    </svg>
+  );
+
+  const CargoIcon = () => (
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="3" width="15" height="13"></rect>
+      <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+      <circle cx="5.5" cy="18.5" r="2.5"></circle>
+      <circle cx="18.5" cy="18.5" r="2.5"></circle>
+    </svg>
+  );
+
   const modalContent: Record<string, ModalData> = {
     residenciais: {
       title: 'Mudanças Residenciais',
+      icon: <HomeIcon />,
       intro: 'O nosso processo chave-na-mão garante a máxima tranquilidade para si e para a sua família durante a mudança de casa.',
       steps: [
         { title: '1. Avaliação e Planeamento', desc: 'Levantamento das volumetrias, acessos (escadas/elevadores) e definição do plano logístico.' },
-        { title: '2. Desmontagem e Embalamento', desc: 'Proteção de móveis com plástico bolha e mantas térmicas. Embalamento etiquetado de louças, roupas e objetos frágeis.' },
-        { title: '3. Carregamento e Elevação Exterior', desc: 'Acomodação segura na frota e utilização de elevador exterior quando necessário para evitar danos no imóvel.' },
-        { title: '4. Transporte e Montagem no Destino', desc: 'Transporte com rastreio, descarregamento, montagem integral do mobiliário e colocação no local final.' }
+        { title: '2. Desmontagem e Embalamento', desc: 'Proteção de móveis com plástico bolha e mantas térmicas. Embalamento etiquetado de louças e objetos frágeis.' },
+        { title: '3. Carregamento e Elevação Exterior', desc: 'Acomodação segura na frota e utilização de elevador exterior quando necessário.' },
+        { title: '4. Transporte e Montagem no Destino', desc: 'Transporte com rastreio, descarregamento e montagem integral do mobiliário no local final.' }
       ]
     },
     escritorio: {
       title: 'Mudanças de Escritório & Empresas',
+      icon: <OfficeIcon />,
       intro: 'Planificação rigorosa orientada para minimizar o tempo de inatividade da sua empresa e proteger o seu ativo.',
       steps: [
         { title: '1. Inventário e Identificação', desc: 'Mapeamento de postos de trabalho, documentação, ficheiros confidenciais e equipamentos de informática.' },
-        { title: '2. Embalamento Técnico de TI', desc: 'Acondicionamento especializado de computadores, servidores, monitores e periféricos com proteção antiestática.' },
+        { title: '2. Embalamento Técnico de TI', desc: 'Acondicionamento especializado de computadores, servidores e monitores com proteção antiestática.' },
         { title: '3. Desmontagem de Mobiliário de Escritório', desc: 'Desmontagem técnica de bancadas, secretárias compostas e estantes industriais.' },
         { title: '4. Reinstalação Rápida', desc: 'Transporte prioritário e posicionamento do mobiliário no novo espaço conforme o layout pré-definido.' }
       ]
     },
     grupagens: {
       title: 'Grupagens de Carga & LTL',
-      intro: 'A solução ideal para enviar mercadorias sem necessidade de contratar um camião completo, reduzindo custos de transporte.',
+      icon: <CargoIcon />,
+      intro: 'A solução ideal para enviar mercadorias sem necessidade de contratar um camião completo, reduzindo custos.',
       steps: [
         { title: '1. Consolidação da Carga', desc: 'Recolha da sua mercadoria ou palete e agrupamento num centro logístico estratégico.' },
         { title: '2. Triagem e Trâmites Alfandegários', desc: 'Gestão da documentação de transporte, CMR e desalfandegamento em rotas internacionais.' },
@@ -105,10 +130,9 @@ export default function HomePage() {
 
   return (
     <main style={{ minHeight: '100vh', backgroundColor: '#f8fafc', color: '#0f172a', fontFamily: 'sans-serif' }}>
-      {/* 1. Navbar Integradada */}
       <Navbar />
 
-      {/* 2. Hero Section com Carrossel e Glassmorphism */}
+      {/* Hero Section com Carrossel */}
       <section id="home" style={{ position: 'relative', width: '100%', height: '520px', overflow: 'hidden' }}>
         {slides.map((slide, index) => (
           <div
@@ -175,7 +199,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. Secção de Serviços (3 Caixas lado a lado com Pop-up) */}
+      {/* Secção de Serviços (3 Caixas Animadas com Ícones) */}
       <section id="servicos" style={{ padding: '70px 20px', backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <h2 style={{ fontSize: '30px', fontWeight: '800', textAlign: 'center', marginBottom: '12px' }}>
@@ -186,58 +210,108 @@ export default function HomePage() {
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '28px' }}>
+            
             {/* Caixa 1: Mudanças Residenciais */}
-            <div style={{ backgroundColor: '#f8fafc', padding: '32px 24px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+            <div 
+              style={{ 
+                backgroundColor: '#f8fafc', 
+                padding: '36px 24px 28px 24px', 
+                borderRadius: '16px', 
+                border: '1px solid #e2e8f0', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                justify: 'space-between', 
+                boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+              }}
+              className="hover-card"
+            >
               <div>
+                <div style={{ width: '80px', height: '80px', backgroundColor: '#eff6ff', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                  <HomeIcon />
+                </div>
                 <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#1e3a8a', marginBottom: '12px' }}>Mudanças Residenciais</h3>
-                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '24px' }}>
+                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '28px' }}>
                   Serviço completo para a sua nova casa com embalamento profissional, desmontagem, transporte seguro e montagem no destino.
                 </p>
               </div>
               <button
                 onClick={() => setActiveModal(modalContent.residenciais)}
-                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '12px 20px', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', width: '100%' }}
+                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '14px 20px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', width: '100%', fontSize: '15px', transition: 'background-color 0.2s' }}
               >
                 Saber Mais
               </button>
             </div>
 
             {/* Caixa 2: Mudanças de Escritório */}
-            <div style={{ backgroundColor: '#f8fafc', padding: '32px 24px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+            <div 
+              style={{ 
+                backgroundColor: '#f8fafc', 
+                padding: '36px 24px 28px 24px', 
+                borderRadius: '16px', 
+                border: '1px solid #e2e8f0', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                justify: 'space-between', 
+                boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+              }}
+              className="hover-card"
+            >
               <div>
+                <div style={{ width: '80px', height: '80px', backgroundColor: '#eff6ff', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                  <OfficeIcon />
+                </div>
                 <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#1e3a8a', marginBottom: '12px' }}>Mudanças de Escritório</h3>
-                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '24px' }}>
-                  Relocalização rápida de empresas, escritórios e estabelecimentos comerciais com garantia de minima interrupção do negócio.
+                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '28px' }}>
+                  Relocalização rápida de empresas, escritórios e estabelecimentos comerciais com garantia de mínima interrupção do negócio.
                 </p>
               </div>
               <button
                 onClick={() => setActiveModal(modalContent.escritorio)}
-                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '12px 20px', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', width: '100%' }}
+                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '14px 20px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', width: '100%', fontSize: '15px', transition: 'background-color 0.2s' }}
               >
                 Saber Mais
               </button>
             </div>
 
             {/* Caixa 3: Grupagens de Carga */}
-            <div style={{ backgroundColor: '#f8fafc', padding: '32px 24px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+            <div 
+              style={{ 
+                backgroundColor: '#f8fafc', 
+                padding: '36px 24px 28px 24px', 
+                borderRadius: '16px', 
+                border: '1px solid #e2e8f0', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                justify: 'space-between', 
+                boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+              }}
+              className="hover-card"
+            >
               <div>
+                <div style={{ width: '80px', height: '80px', backgroundColor: '#eff6ff', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                  <CargoIcon />
+                </div>
                 <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#1e3a8a', marginBottom: '12px' }}>Grupagens de Carga</h3>
-                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '24px' }}>
+                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '28px' }}>
                   Transporte otimizado de volumes e paletes em regime partilhado, reduzindo custos para envios nacionais e internacionais.
                 </p>
               </div>
               <button
                 onClick={() => setActiveModal(modalContent.grupagens)}
-                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '12px 20px', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', width: '100%' }}
+                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '14px 20px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', width: '100%', fontSize: '15px', transition: 'background-color 0.2s' }}
               >
                 Saber Mais
               </button>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* Pop-up Modal em Vidro (Glassmorphism) */}
+      {/* Pop-up Modal em Vidro com Ícone */}
       {activeModal && (
         <div
           style={{
@@ -259,29 +333,28 @@ export default function HomePage() {
         >
           <div
             style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.92)',
+              backgroundColor: 'rgba(255, 255, 255, 0.94)',
               backdropFilter: 'blur(16px)',
               WebkitBackdropFilter: 'blur(16px)',
               border: '1px solid rgba(255, 255, 255, 0.5)',
-              borderRadius: '16px',
+              borderRadius: '20px',
               maxWidth: '650px',
               width: '100%',
               maxHeight: '90vh',
               overflowY: 'auto',
-              padding: '32px',
+              padding: '36px',
               boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
               position: 'relative',
               color: '#0f172a'
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Botão Fechar */}
             <button
               onClick={() => setActiveModal(null)}
               style={{
                 position: 'absolute',
-                top: '16px',
-                right: '16px',
+                top: '20px',
+                right: '20px',
                 backgroundColor: '#e2e8f0',
                 border: 'none',
                 borderRadius: '50%',
@@ -296,17 +369,23 @@ export default function HomePage() {
               ✕
             </button>
 
-            <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#1e3a8a', marginBottom: '12px' }}>
-              {activeModal.title}
-            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
+              <div style={{ width: '56px', height: '56px', backgroundColor: '#eff6ff', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {activeModal.icon}
+              </div>
+              <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#1e3a8a', margin: 0 }}>
+                {activeModal.title}
+              </h2>
+            </div>
+
             <p style={{ color: '#475569', fontSize: '15px', marginBottom: '24px', lineHeight: '1.5' }}>
               {activeModal.intro}
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '28px' }}>
               {activeModal.steps.map((step, idx) => (
-                <div key={idx} style={{ backgroundColor: '#ffffff', padding: '16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                  <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#0f172a', marginBottom: '4px' }}>
+                <div key={idx} style={{ backgroundColor: '#ffffff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+                  <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#1e3a8a', marginBottom: '4px' }}>
                     {step.title}
                   </h4>
                   <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: '1.5' }}>
@@ -318,7 +397,7 @@ export default function HomePage() {
 
             <button
               onClick={() => setActiveModal(null)}
-              style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', width: '100%', fontSize: '15px' }}
+              style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '14px 24px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', width: '100%', fontSize: '15px' }}
             >
               Fechar Detalhes
             </button>
@@ -326,7 +405,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* 4. Secção Agendamento e Formulário de Orçamento */}
+      {/* Form de Agendamento */}
       <section id="agendamento" style={{ padding: '60px 20px', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto', backgroundColor: '#ffffff', padding: '32px', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #e2e8f0' }}>
           <h2 style={{ fontSize: '26px', fontWeight: '700', textAlign: 'center', marginBottom: '8px' }}>
@@ -386,7 +465,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Secção Contacto */}
+      {/* Secção Contacto */}
       <section id="contacto" style={{ padding: '60px 20px', backgroundColor: '#ffffff' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>Contacte-nos</h2>
