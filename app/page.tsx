@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 
 export default function HomePage() {
+  // Estado para o Formulário de Orçamento
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -13,6 +14,43 @@ export default function HomePage() {
     tipoServico: 'mudanca_residencial',
     mensagem: '',
   });
+
+  // Estado e dados para o Carrossel do Hero
+  const slides = [
+    {
+      url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80',
+      title: 'Transportes & Logística Internacional',
+      subtitle: 'Trâmites alfandegários, carga marítima e transporte dedicado sem complicações.'
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
+      title: 'Mudanças Residenciais Chave-na-Mão',
+      subtitle: 'Cuidado total com a sua casa, embalamento especializado e transporte seguro.'
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1600&q=80',
+      title: 'Transporte de Carga & Mercadorias',
+      subtitle: 'Frota moderna e equipada para entregas rápidas em todo o país e Europa.'
+    }
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? slides.length - 1 : prevIndex - 1));
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,30 +63,175 @@ export default function HomePage() {
 
   return (
     <main style={{ minHeight: '100vh', backgroundColor: '#f8fafc', color: '#0f172a', fontFamily: 'sans-serif' }}>
-      {/* Navegação integrada diretamente na Homepage */}
+      {/* 1. Navbar Mantida Intacta */}
       <Navbar />
 
-      {/* Hero Section / Banner Inicial */}
-      <section id="home" style={{ backgroundColor: '#ffffff', padding: '80px 20px', textAlign: 'center', borderBottom: '1px solid #e2e8f0' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-          <h1 style={{ fontSize: '42px', fontWeight: '800', color: '#0f172a', marginBottom: '16px', lineHeight: '1.2' }}>
-            Transportes e Mudanças com Rigor
-          </h1>
-          <p style={{ fontSize: '18px', color: '#475569', marginBottom: '32px', maxWidth: '650px', margin: '0 auto 32px auto' }}>
-            Soluções completas de mudanças residenciais, empresariais e transporte de mercadorias em todo o país.
-          </p>
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="#agendamento" style={{ backgroundColor: '#1e3a8a', color: '#ffffff', padding: '14px 28px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold' }}>
-              Pedir Orçamento Grátis
-            </a>
-            <a href="#servicos" style={{ backgroundColor: '#f1f5f9', color: '#0f172a', padding: '14px 28px', borderRadius: '8px', textDecoration: 'none', fontWeight: '600', border: '1px solid #cbd5e1' }}>
-              Ver Serviços
-            </a>
+      {/* 2. Hero Section com Carrossel e Efeito de Vidro */}
+      <section id="home" style={{ position: 'relative', width: '100%', height: '520px', overflow: 'hidden' }}>
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundImage: `url(${slide.url})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              opacity: index === currentIndex ? 1 : 0,
+              transition: 'opacity 1s ease-in-out',
+              zIndex: 1
+            }}
+          />
+        ))}
+
+        {/* Camada de sobreposição para contraste */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(15, 23, 42, 0.4)',
+            zIndex: 2
+          }}
+        />
+
+        {/* Cartão de Vidro (Glassmorphism) */}
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 3,
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 20px'
+          }}
+        >
+          <div
+            style={{
+              maxWidth: '850px',
+              width: '100%',
+              backgroundColor: 'rgba(255, 255, 255, 0.25)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '16px',
+              padding: '40px 30px',
+              textAlign: 'center',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25)',
+              color: '#ffffff'
+            }}
+          >
+            <h1 style={{ fontSize: '38px', fontWeight: '800', marginBottom: '16px', textShadow: '0 2px 4px rgba(0,0,0,0.3)', lineHeight: '1.2' }}>
+              {slides[currentIndex].title}
+            </h1>
+            <p style={{ fontSize: '18px', marginBottom: '28px', color: '#f8fafc', textShadow: '0 1px 2px rgba(0,0,0,0.3)', maxWidth: '650px', margin: '0 auto 28px auto' }}>
+              {slides[currentIndex].subtitle}
+            </p>
+
+            <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <a
+                href="#agendamento"
+                style={{
+                  backgroundColor: '#1e3a8a',
+                  color: '#ffffff',
+                  padding: '14px 28px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontWeight: 'bold',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+                }}
+              >
+                Pedir Orçamento Grátis
+              </a>
+              <a
+                href="#servicos"
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                  color: '#0f172a',
+                  padding: '14px 28px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontWeight: '600',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                Ver Serviços
+              </a>
+            </div>
           </div>
+        </div>
+
+        {/* Setas de Navegação */}
+        <button
+          onClick={prevSlide}
+          style={{
+            position: 'absolute',
+            left: '20px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            zIndex: 4,
+            backgroundColor: 'rgba(0,0,0,0.4)',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '50%',
+            width: '44px',
+            height: '44px',
+            fontSize: '20px',
+            cursor: 'pointer',
+            backdropFilter: 'blur(4px)'
+          }}
+        >
+          ❮
+        </button>
+        <button
+          onClick={nextSlide}
+          style={{
+            position: 'absolute',
+            right: '20px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            zIndex: 4,
+            backgroundColor: 'rgba(0,0,0,0.4)',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '50%',
+            width: '44px',
+            height: '44px',
+            fontSize: '20px',
+            cursor: 'pointer',
+            backdropFilter: 'blur(4px)'
+          }}
+        >
+          ❯
+        </button>
+
+        {/* Indicadores do Carrossel */}
+        <div style={{ position: 'absolute', bottom: '20px', width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', zIndex: 4 }}>
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              style={{
+                width: index === currentIndex ? '28px' : '10px',
+                height: '10px',
+                borderRadius: '5px',
+                backgroundColor: index === currentIndex ? '#ffffff' : 'rgba(255,255,255,0.5)',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+            />
+          ))}
         </div>
       </section>
 
-      {/* Secção Empresas */}
+      {/* 3. Secção Empresas */}
       <section id="empresas" style={{ padding: '60px 20px', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <h2 style={{ fontSize: '28px', fontWeight: '700', textAlign: 'center', marginBottom: '12px' }}>
@@ -75,7 +258,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Secção Serviços */}
+      {/* 4. Secção Serviços */}
       <section id="servicos" style={{ padding: '60px 20px', backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <h2 style={{ fontSize: '28px', fontWeight: '700', textAlign: 'center', marginBottom: '12px' }}>
@@ -102,7 +285,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Secção Agendamento e Formulário de Orçamento */}
+      {/* 5. Secção Agendamento / Orçamento */}
       <section id="agendamento" style={{ padding: '60px 20px', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto', backgroundColor: '#ffffff', padding: '32px', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #e2e8f0' }}>
           <h2 style={{ fontSize: '26px', fontWeight: '700', textAlign: 'center', marginBottom: '8px' }}>
@@ -162,7 +345,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Secção Contacto */}
+      {/* 6. Secção Contacto */}
       <section id="contacto" style={{ padding: '60px 20px', backgroundColor: '#ffffff' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>Contacte-nos</h2>
