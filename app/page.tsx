@@ -68,23 +68,23 @@ export default function HomePage() {
     alert('Pedido de orçamento enviado com sucesso! Entraremos em contacto brevemente.');
   };
 
-  // Ícones SVG para dar vida visual aos cartões
+  // Ícones SVG Vetoriais
   const HomeIcon = () => (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-10 h-10 text-blue-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
       <polyline points="9 22 9 12 15 12 15 22"></polyline>
     </svg>
   );
 
   const OfficeIcon = () => (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-10 h-10 text-blue-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
       <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
     </svg>
   );
 
   const CargoIcon = () => (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-10 h-10 text-blue-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="1" y="3" width="15" height="13"></rect>
       <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
       <circle cx="5.5" cy="18.5" r="2.5"></circle>
@@ -129,179 +129,117 @@ export default function HomePage() {
   };
 
   return (
-    <main style={{ minHeight: '100vh', backgroundColor: '#f8fafc', color: '#0f172a', fontFamily: 'sans-serif' }}>
+    <main className="min-h-screen bg-slate-50 text-slate-900 font-sans">
       <Navbar />
 
-      {/* Hero Section com Carrossel */}
-      <section id="home" style={{ position: 'relative', width: '100%', height: '520px', overflow: 'hidden' }}>
+      {/* Hero Section */}
+      <section id="home" className="relative w-full h-[520px] overflow-hidden">
         {slides.map((slide, index) => (
           <div
             key={index}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              backgroundImage: `url(${slide.url})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              opacity: index === currentIndex ? 1 : 0,
-              transition: 'opacity 1s ease-in-out',
-              zIndex: 1
-            }}
+            className={`absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ${
+              index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+            }`}
+            style={{ backgroundImage: `url(${slide.url})` }}
           />
         ))}
 
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(15, 23, 42, 0.4)', zIndex: 2 }} />
+        <div className="absolute inset-0 bg-slate-900/40 z-20" />
 
-        <div style={{ position: 'relative', zIndex: 3, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 20px' }}>
-          <div
-            style={{
-              maxWidth: '850px',
-              width: '100%',
-              backgroundColor: 'rgba(255, 255, 255, 0.25)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '16px',
-              padding: '40px 30px',
-              textAlign: 'center',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25)',
-              color: '#ffffff'
-            }}
-          >
-            <h1 style={{ fontSize: '38px', fontWeight: '800', marginBottom: '16px', textShadow: '0 2px 4px rgba(0,0,0,0.3)', lineHeight: '1.2' }}>
+        <div className="relative z-30 h-full flex items-center justify-center px-5">
+          <div className="max-w-3xl w-full bg-white/25 backdrop-blur-md border border-white/30 rounded-2xl p-8 md:p-10 text-center shadow-2xl text-white">
+            <h1 className="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-md leading-tight">
               {slides[currentIndex].title}
             </h1>
-            <p style={{ fontSize: '18px', marginBottom: '28px', color: '#f8fafc', textShadow: '0 1px 2px rgba(0,0,0,0.3)', maxWidth: '650px', margin: '0 auto 28px auto' }}>
+            <p className="text-base md:text-lg mb-7 text-slate-100 drop-shadow max-w-xl mx-auto">
               {slides[currentIndex].subtitle}
             </p>
 
-            <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="#agendamento" style={{ backgroundColor: '#1e3a8a', color: '#ffffff', padding: '14px 28px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)' }}>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <a href="#agendamento" className="bg-blue-900 hover:bg-blue-800 text-white px-7 py-3.5 rounded-lg font-bold shadow-lg transition-colors">
                 Pedir Orçamento Grátis
               </a>
-              <a href="#servicos" style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', color: '#0f172a', padding: '14px 28px', borderRadius: '8px', textDecoration: 'none', fontWeight: '600', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}>
+              <a href="#servicos" className="bg-white/90 hover:bg-white text-slate-900 px-7 py-3.5 rounded-lg font-semibold shadow transition-colors">
                 Ver Serviços
               </a>
             </div>
           </div>
         </div>
 
-        <button onClick={prevSlide} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', zIndex: 4, backgroundColor: 'rgba(0,0,0,0.4)', color: '#ffffff', border: 'none', borderRadius: '50%', width: '44px', height: '44px', fontSize: '20px', cursor: 'pointer', backdropFilter: 'blur(4px)' }}>❮</button>
-        <button onClick={nextSlide} style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', zIndex: 4, backgroundColor: 'rgba(0,0,0,0.4)', color: '#ffffff', border: 'none', borderRadius: '50%', width: '44px', height: '44px', fontSize: '20px', cursor: 'pointer', backdropFilter: 'blur(4px)' }}>❯</button>
+        <button onClick={prevSlide} className="absolute left-5 top-1/2 -translate-y-1/2 z-40 bg-black/40 hover:bg-black/60 text-white rounded-full w-11 h-11 flex items-center justify-center backdrop-blur transition-all">❮</button>
+        <button onClick={nextSlide} className="absolute right-5 top-1/2 -translate-y-1/2 z-40 bg-black/40 hover:bg-black/60 text-white rounded-full w-11 h-11 flex items-center justify-center backdrop-blur transition-all">❯</button>
 
-        <div style={{ position: 'absolute', bottom: '20px', width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', zIndex: 4 }}>
+        <div className="absolute bottom-5 w-full flex justify-center gap-2 z-40">
           {slides.map((_, index) => (
-            <button key={index} onClick={() => setCurrentIndex(index)} style={{ width: index === currentIndex ? '28px' : '10px', height: '10px', borderRadius: '5px', backgroundColor: index === currentIndex ? '#ffffff' : 'rgba(255,255,255,0.5)', border: 'none', cursor: 'pointer', transition: 'all 0.3s' }} />
+            <button key={index} onClick={() => setCurrentIndex(index)} className={`h-2.5 rounded-full transition-all ${index === currentIndex ? 'w-7 bg-white' : 'w-2.5 bg-white/50'}`} />
           ))}
         </div>
       </section>
 
-      {/* Secção de Serviços (3 Caixas Animadas com Ícones) */}
-      <section id="servicos" style={{ padding: '70px 20px', backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: '30px', fontWeight: '800', textAlign: 'center', marginBottom: '12px' }}>
+      {/* Secção de Serviços com Cartões Animados e Ícones */}
+      <section id="servicos" className="py-20 px-5 bg-white border-b border-slate-200">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-extrabold text-center mb-3 text-slate-900">
             Soluções & Especialidades
           </h2>
-          <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '48px', fontSize: '16px' }}>
+          <p className="text-center text-slate-500 mb-12 text-base">
             Apoio completo para habitações, empresas e logística de mercadorias.
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '28px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            {/* Caixa 1: Mudanças Residenciais */}
-            <div 
-              style={{ 
-                backgroundColor: '#f8fafc', 
-                padding: '36px 24px 28px 24px', 
-                borderRadius: '16px', 
-                border: '1px solid #e2e8f0', 
-                display: 'flex', 
-                flexDirection: 'column', 
-                justify: 'space-between', 
-                boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-              }}
-              className="hover-card"
-            >
+            {/* Cartão 1 */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 flex flex-col justify-between shadow-sm hover:-translate-y-2 hover:shadow-xl hover:border-blue-300 transition-all duration-300 group">
               <div>
-                <div style={{ width: '80px', height: '80px', backgroundColor: '#eff6ff', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-200 transition-all duration-300">
                   <HomeIcon />
                 </div>
-                <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#1e3a8a', marginBottom: '12px' }}>Mudanças Residenciais</h3>
-                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '28px' }}>
+                <h3 className="text-xl font-bold text-blue-900 mb-3">Mudanças Residenciais</h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-8">
                   Serviço completo para a sua nova casa com embalamento profissional, desmontagem, transporte seguro e montagem no destino.
                 </p>
               </div>
               <button
                 onClick={() => setActiveModal(modalContent.residenciais)}
-                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '14px 20px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', width: '100%', fontSize: '15px', transition: 'background-color 0.2s' }}
+                className="bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3.5 px-5 rounded-lg w-full text-sm transition-colors shadow-sm"
               >
                 Saber Mais
               </button>
             </div>
 
-            {/* Caixa 2: Mudanças de Escritório */}
-            <div 
-              style={{ 
-                backgroundColor: '#f8fafc', 
-                padding: '36px 24px 28px 24px', 
-                borderRadius: '16px', 
-                border: '1px solid #e2e8f0', 
-                display: 'flex', 
-                flexDirection: 'column', 
-                justify: 'space-between', 
-                boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-              }}
-              className="hover-card"
-            >
+            {/* Cartão 2 */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 flex flex-col justify-between shadow-sm hover:-translate-y-2 hover:shadow-xl hover:border-blue-300 transition-all duration-300 group">
               <div>
-                <div style={{ width: '80px', height: '80px', backgroundColor: '#eff6ff', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-200 transition-all duration-300">
                   <OfficeIcon />
                 </div>
-                <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#1e3a8a', marginBottom: '12px' }}>Mudanças de Escritório</h3>
-                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '28px' }}>
+                <h3 className="text-xl font-bold text-blue-900 mb-3">Mudanças de Escritório</h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-8">
                   Relocalização rápida de empresas, escritórios e estabelecimentos comerciais com garantia de mínima interrupção do negócio.
                 </p>
               </div>
               <button
                 onClick={() => setActiveModal(modalContent.escritorio)}
-                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '14px 20px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', width: '100%', fontSize: '15px', transition: 'background-color 0.2s' }}
+                className="bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3.5 px-5 rounded-lg w-full text-sm transition-colors shadow-sm"
               >
                 Saber Mais
               </button>
             </div>
 
-            {/* Caixa 3: Grupagens de Carga */}
-            <div 
-              style={{ 
-                backgroundColor: '#f8fafc', 
-                padding: '36px 24px 28px 24px', 
-                borderRadius: '16px', 
-                border: '1px solid #e2e8f0', 
-                display: 'flex', 
-                flexDirection: 'column', 
-                justify: 'space-between', 
-                boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-              }}
-              className="hover-card"
-            >
+            {/* Cartão 3 */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 flex flex-col justify-between shadow-sm hover:-translate-y-2 hover:shadow-xl hover:border-blue-300 transition-all duration-300 group">
               <div>
-                <div style={{ width: '80px', height: '80px', backgroundColor: '#eff6ff', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-200 transition-all duration-300">
                   <CargoIcon />
                 </div>
-                <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#1e3a8a', marginBottom: '12px' }}>Grupagens de Carga</h3>
-                <p style={{ color: '#475569', fontSize: '15px', lineHeight: '1.6', marginBottom: '28px' }}>
+                <h3 className="text-xl font-bold text-blue-900 mb-3">Grupagens de Carga</h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-8">
                   Transporte otimizado de volumes e paletes em regime partilhado, reduzindo custos para envios nacionais e internacionais.
                 </p>
               </div>
               <button
                 onClick={() => setActiveModal(modalContent.grupagens)}
-                style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '14px 20px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', width: '100%', fontSize: '15px', transition: 'background-color 0.2s' }}
+                className="bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3.5 px-5 rounded-lg w-full text-sm transition-colors shadow-sm"
               >
                 Saber Mais
               </button>
@@ -311,84 +249,43 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Pop-up Modal em Vidro com Ícone */}
+      {/* Pop-up Modal */}
       {activeModal && (
         <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(15, 23, 42, 0.65)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px'
-          }}
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-5"
           onClick={() => setActiveModal(null)}
         >
           <div
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.94)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              border: '1px solid rgba(255, 255, 255, 0.5)',
-              borderRadius: '20px',
-              maxWidth: '650px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: '36px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
-              position: 'relative',
-              color: '#0f172a'
-            }}
+            className="bg-white/95 backdrop-blur-xl border border-white/40 rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setActiveModal(null)}
-              style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                backgroundColor: '#e2e8f0',
-                border: 'none',
-                borderRadius: '50%',
-                width: '36px',
-                height: '36px',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                color: '#334155'
-              }}
+              className="absolute top-5 right-5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-full w-9 h-9 flex items-center justify-center font-bold text-sm transition-colors"
             >
               ✕
             </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
-              <div style={{ width: '56px', height: '56px', backgroundColor: '#eff6ff', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
                 {activeModal.icon}
               </div>
-              <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#1e3a8a', margin: 0 }}>
+              <h2 className="text-2xl font-extrabold text-blue-900">
                 {activeModal.title}
               </h2>
             </div>
 
-            <p style={{ color: '#475569', fontSize: '15px', marginBottom: '24px', lineHeight: '1.5' }}>
+            <p className="text-slate-600 text-sm mb-6 leading-relaxed">
               {activeModal.intro}
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '28px' }}>
+            <div className="flex flex-col gap-4 mb-7">
               {activeModal.steps.map((step, idx) => (
-                <div key={idx} style={{ backgroundColor: '#ffffff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
-                  <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#1e3a8a', marginBottom: '4px' }}>
+                <div key={idx} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                  <h4 className="text-base font-bold text-blue-900 mb-1">
                     {step.title}
                   </h4>
-                  <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: '1.5' }}>
+                  <p className="text-sm text-slate-500 leading-relaxed">
                     {step.desc}
                   </p>
                 </div>
@@ -397,7 +294,7 @@ export default function HomePage() {
 
             <button
               onClick={() => setActiveModal(null)}
-              style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: 'none', padding: '14px 24px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', width: '100%', fontSize: '15px' }}
+              className="bg-blue-900 hover:bg-blue-800 text-white font-bold py-3.5 px-6 rounded-lg w-full text-sm transition-colors"
             >
               Fechar Detalhes
             </button>
@@ -406,46 +303,46 @@ export default function HomePage() {
       )}
 
       {/* Form de Agendamento */}
-      <section id="agendamento" style={{ padding: '60px 20px', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-        <div style={{ maxWidth: '700px', margin: '0 auto', backgroundColor: '#ffffff', padding: '32px', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #e2e8f0' }}>
-          <h2 style={{ fontSize: '26px', fontWeight: '700', textAlign: 'center', marginBottom: '8px' }}>
+      <section id="agendamento" className="py-16 px-5 bg-slate-50 border-b border-slate-200">
+        <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+          <h2 className="text-2xl font-bold text-center mb-2">
             Pedir Orçamento / Agendamento
           </h2>
-          <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '24px', fontSize: '14px' }}>
+          <p className="text-center text-slate-500 mb-6 text-sm">
             Preencha o formulário abaixo e receba a nossa estimativa detalhada sem compromisso.
           </p>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>Nome</label>
-                <input type="text" name="nome" required value={formData.nome} onChange={handleChange} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+                <label className="block text-xs font-semibold mb-1">Nome</label>
+                <input type="text" name="nome" required value={formData.nome} onChange={handleChange} className="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm" />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>Telefone</label>
-                <input type="tel" name="telefone" required value={formData.telefone} onChange={handleChange} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
-              </div>
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>E-mail</label>
-              <input type="email" name="email" required value={formData.email} onChange={handleChange} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>Localidade de Origem</label>
-                <input type="text" name="origem" required value={formData.origem} onChange={handleChange} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>Localidade de Destino</label>
-                <input type="text" name="destino" required value={formData.destino} onChange={handleChange} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+                <label className="block text-xs font-semibold mb-1">Telefone</label>
+                <input type="tel" name="telefone" required value={formData.telefone} onChange={handleChange} className="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm" />
               </div>
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>Tipo de Serviço</label>
-              <select name="tipoServico" value={formData.tipoServico} onChange={handleChange} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+              <label className="block text-xs font-semibold mb-1">E-mail</label>
+              <input type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold mb-1">Localidade de Origem</label>
+                <input type="text" name="origem" required value={formData.origem} onChange={handleChange} className="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold mb-1">Localidade de Destino</label>
+                <input type="text" name="destino" required value={formData.destino} onChange={handleChange} className="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold mb-1">Tipo de Serviço</label>
+              <select name="tipoServico" value={formData.tipoServico} onChange={handleChange} className="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm">
                 <option value="mudanca_residencial">Mudança Residencial</option>
                 <option value="mudanca_empresarial">Mudança Empresarial</option>
                 <option value="grupagem_carga">Grupagem de Carga</option>
@@ -454,11 +351,11 @@ export default function HomePage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>Detalhes Adicionais</label>
-              <textarea name="mensagem" rows={4} value={formData.mensagem} onChange={handleChange} placeholder="Descreva os objetos a transportar, pisos, acesso a elevador, etc." style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+              <label className="block text-xs font-semibold mb-1">Detalhes Adicionais</label>
+              <textarea name="mensagem" rows={4} value={formData.mensagem} onChange={handleChange} placeholder="Descreva os objetos a transportar, pisos, acesso a elevador, etc." className="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm" />
             </div>
 
-            <button type="submit" style={{ backgroundColor: '#16a34a', color: '#ffffff', padding: '14px', borderRadius: '6px', border: 'none', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', marginTop: '8px' }}>
+            <button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-lg font-bold text-base transition-colors mt-2 shadow">
               Enviar Pedido de Orçamento
             </button>
           </form>
@@ -466,25 +363,25 @@ export default function HomePage() {
       </section>
 
       {/* Secção Contacto */}
-      <section id="contacto" style={{ padding: '60px 20px', backgroundColor: '#ffffff' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>Contacte-nos</h2>
-          <p style={{ color: '#475569', marginBottom: '24px' }}>Estamos disponíveis para responder a todas as suas questões.</p>
+      <section id="contacto" className="py-16 px-5 bg-white">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-3">Contacte-nos</h2>
+          <p className="text-slate-600 mb-6 text-sm">Estamos disponíveis para responder a todas as suas questões.</p>
           
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', flexWrap: 'wrap', fontSize: '16px' }}>
+          <div className="flex justify-center gap-8 flex-wrap text-base">
             <div>
-              <strong>Telefone / Orçamentos:</strong> <a href="tel:965531009" style={{ color: '#1e3a8a', textDecoration: 'none' }}>965 531 009</a>
+              <strong>Telefone / Orçamentos:</strong> <a href="tel:965531009" className="text-blue-900 hover:underline">965 531 009</a>
             </div>
             <div>
-              <strong>E-mail:</strong> <a href="mailto:Geral@nortecargo.pt" style={{ color: '#16a34a', textDecoration: 'none' }}>Geral@nortecargo.pt</a>
+              <strong>E-mail:</strong> <a href="mailto:Geral@nortecargo.pt" className="text-emerald-600 hover:underline">Geral@nortecargo.pt</a>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer style={{ backgroundColor: '#0f172a', color: '#94a3b8', padding: '30px 20px', textAlign: 'center', fontSize: '14px' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+      <footer className="bg-slate-900 text-slate-400 py-8 px-5 text-center text-xs">
+        <div className="max-w-6xl mx-auto">
           <p>© {new Date().getFullYear()} NORTECARGO - Transportes e Mudanças. Todos os direitos reservados.</p>
         </div>
       </footer>
