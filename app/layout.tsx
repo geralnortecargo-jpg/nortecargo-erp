@@ -12,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt">
-      <body style={{ margin: 0, padding: 0 }}>
+    <html lang="pt" className="scroll-smooth">
+      <body className="bg-slate-950 text-slate-100 font-sans antialiased">
         {children}
       </body>
     </html>
